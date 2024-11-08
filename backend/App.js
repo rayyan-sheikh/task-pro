@@ -34,9 +34,9 @@ app.get('/', (req, res) => {
 
 // Use the user routes
 app.use('/api', userRoutes);
-app.use('/projects', projectRoutes);
+app.use('/api', projectRoutes);
 app.use('/api', taskRoutes);
-app.use('/api/project-members', projectMemberRoutes);
+app.use('/api', projectMemberRoutes);
 
 // Function to create tables
 const initializeTables = async () => {

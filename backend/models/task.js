@@ -53,6 +53,18 @@ const Task = {
     return result.rows[0];
   },
 
+  changeTaskStatus: async (id, status) => {
+    const query = `
+      UPDATE tasks
+      SET status = $1, updatedAt = NOW()
+      WHERE id = $2
+      RETURNING *;
+    `;
+    const values = [status, id];
+    const result = await pool.query(query, values);
+    return result.rows[0];
+  },
+
   deleteTask: async (id) => {
     const query = `DELETE FROM tasks WHERE id = $1;`;
     await pool.query(query, [id]);

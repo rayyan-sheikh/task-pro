@@ -1,5 +1,6 @@
 const Project = require("../models/project");
 const ProjectMember = require('../models/projectMember');
+const { getProjectSummaryForUser } = require("../queries/getProjectSummaryForUser");
 
 const projectController = {
 
@@ -104,6 +105,19 @@ const projectController = {
       console.error(error);
       res.status(500).json({ message: 'Error deleting project' });
     }
+  },
+
+  fetchProjectSummary: async(req, res) => {
+    const { userId } = req.params;
+
+  try {
+    const projectSummary = await getProjectSummaryForUser(userId);
+    console.log(projectSummary)
+    res.json(projectSummary);
+  } catch (error) {
+    console.error('Error fetching project summary:', error);
+    res.status(500).json({ error: 'Failed to fetch project summary.' });
+  }
   }
 };
 

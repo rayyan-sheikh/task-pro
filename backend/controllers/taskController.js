@@ -1,4 +1,5 @@
 const Task = require('../models/task');
+const UserPendingTasksQueries = require('../queries/userInProgressTasksQueries');
 
 const taskController = {
   createTask: async (req, res) => {
@@ -60,6 +61,33 @@ const taskController = {
     }
   },
 
+  changeTaskStatus: async (req, res) => {
+    try {
+      const { id } = req.params; // Get the task ID from the request parameters
+      const { status } = req.body; // Get the new status from the request body
+  
+      // Check if the status is provided
+      if (!status) {
+        return res.status(400).json({ message: 'Status is required' });
+      }
+  
+      // Update the task status using the Task model's changeTaskStatus method
+      const changedTaskStatus = await Task.changeTaskStatus(id, status);
+      
+      // Check if the task was found and updated
+      if (!changedTaskStatus) {
+        return res.status(404).json({ message: 'Task not found' });
+      }
+  
+      // Respond with the updated task status
+      res.status(200).json(changedTaskStatus);
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ message: 'Error updating task' });
+    }
+  },
+  
+
   deleteTask: async (req, res) => {
     try {
       const { id } = req.params;
@@ -70,7 +98,18 @@ const taskController = {
       console.error(error);
       res.status(500).json({ message: 'Error deleting task' });
     }
-  }
+  },
+  
+  getInProgressTasksForUser: async (req, res) => {
+    const userId = req.params.id; // Assuming you're passing the user ID in the route
+    try {
+      const tasks = await UserPendingTasksQueries.getInProgressTasksByUserId(userId);
+      res.status(200).json(tasks);
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ message: 'Error fetching in progress tasks' });
+    }
+  },
 };
 
 module.exports = taskController;

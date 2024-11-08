@@ -19,15 +19,39 @@ const Project = {
   },
 
   createProject: async (name, description, createdBy, deadline, status) => {
-    const query = `
-      INSERT INTO projects (name, description, createdBy, status, deadline)
-      VALUES ($1, $2, $3, $4, $5)
-      RETURNING *;
-    `;
-    const values = [name, description, createdBy, status, deadline];
-    const result = await pool.query(query, values);
-    return result.rows[0];
+    const client = await pool.connect(); // Connect to the pool
+    try {
+      await client.query('BEGIN'); // Start a transaction
+  
+      // Insert the project into the projects table
+      const query = `
+        INSERT INTO projects (name, description, createdBy, status, deadline)
+        VALUES ($1, $2, $3, $4, $5)
+        RETURNING id, name, description, createdBy, status, deadline;  -- Return more details
+      `;
+      const values = [name, description, createdBy, status, deadline];
+      const result = await client.query(query, values);
+      const projectId = result.rows[0].id; // Get the created project's ID
+  
+      // Insert the creator (createdBy) into the project_members table
+      const insertMemberQuery = `
+        INSERT INTO project_members (projectid, userid, role)
+        VALUES ($1, $2, 'admin')  -- Assigning the creator as 'admin'
+      `;
+      const insertMemberValues = [projectId, createdBy];
+      await client.query(insertMemberQuery, insertMemberValues);
+  
+      await client.query('COMMIT'); // Commit the transaction
+      return result.rows[0]; // Return the full project details
+    } catch (error) {
+      await client.query('ROLLBACK'); // Rollback the transaction in case of error
+      console.error('Error creating project:', error);
+      throw error; // Throw the error to be handled by the calling function
+    } finally {
+      client.release(); // Release the client back to the pool
+    }
   },
+  
 
   findById: async (id) => {
     const query = `SELECT * FROM projects WHERE id = $1;`;
