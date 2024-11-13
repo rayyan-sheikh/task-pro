@@ -35,6 +35,22 @@ const ProjectMember = {
     return result.rows[0];
   },
 
+  addMembers: async (userIds, projectId, role = 'member') => {
+    // Generate the VALUES clause dynamically for each userId
+    const valuesClause = userIds.map((_, index) => `($${index + 1}, $${userIds.length + 1}, $${userIds.length + 2})`).join(", ");
+    
+    const query = `
+      INSERT INTO project_members (userId, projectId, role)
+      VALUES ${valuesClause}
+      ON CONFLICT (userId, projectId) DO NOTHING
+      RETURNING *;
+    `;
+    
+    const values = [...userIds, projectId, role];
+    const result = await pool.query(query, values);
+    return result.rows;
+  },
+
   removeMember: async (userId, projectId) => {
     const query = `
       DELETE FROM project_members 

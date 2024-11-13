@@ -1,0 +1,15 @@
+
+.input:focus, .CreateNewProjectDescriptionInput:focus, .CreateNewProjectNameInput:focus{
+    border: 2px solid #ff8c00;
+}
+
+
+.CreateNewProjectDescriptionInput{
+    height: 15rem;
+    
+    
+}
+
+.wrapper:focus{
+    border: 2px solid #ff8c00;
+}

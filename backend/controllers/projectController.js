@@ -118,7 +118,19 @@ const projectController = {
     console.error('Error fetching project summary:', error);
     res.status(500).json({ error: 'Failed to fetch project summary.' });
   }
-  }
+  },
+
+  getProjectsByUseId: async(req, res)=> {
+    const {userId} = req.params;
+
+    try {
+      const proectsByUserId = await Project.getProjectsByUserId(userId);
+      res.json(proectsByUserId)
+    } catch (error) {
+      console.error('Error fetching projects by User Id:', error);
+    res.status(500).json({ error: 'Failed to fetch projects by user id.' });
+    }
+  },
 };
 
 

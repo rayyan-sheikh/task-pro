@@ -1,16 +1,18 @@
-import { AppShell, Burger, Group, Skeleton, Title } from '@mantine/core';
+import { AppShell, Burger, Group, Title } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
-import InProgressTasks from '../components/InProgressTasks';
-import ProjectsCarousel from '../components/ProjectsCarousel';
-import { CompositeChart, PieChart } from '@mantine/charts';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Navbar from '../components/Navbar';
-
+import Dashboard from './Dashboard';
+import UserProjects from './UserProjects';
+import ProjectPage from './ProjectPage';
+import CreateNewProject from './CreateNewProject';
 
 const AppLayout = () => {
-    const [opened, { toggle }] = useDisclosure();
-      const userId = '31b559bc-1197-4428-b76b-bc968e57b16e'
+  const [opened, { toggle }] = useDisclosure();
+  
 
-    return (
+  return (
+    <Router>
       <AppShell
         header={{ height: { base: 80, md: 80, lg: 80 } }}
         navbar={{
@@ -20,27 +22,31 @@ const AppLayout = () => {
         }}
         padding="md"
       >
-        <AppShell.Header bg={'gray.0'} pl={10}>
+        <AppShell.Header withBorder={true} bg="gray.0" pl={10} >
           <Group h="100%" px="md">
             <Burger opened={opened} onClick={toggle} hiddenFrom="sm" size="sm" />
-            <Title size="h1" c={'dark.6'} ff={'poppins'} fw={500} lts={-2} lh={2}>
-        task
-      </Title>
-      <Title size={35} c={'orange.8'} ff={'poppins'} fw={700} lts={-2} lh={2} ml={-15}>
-        PRO
-      </Title>
+            <Title size="h1" c="dark.6" ff="poppins" fw={500} lts={-2} lh={2}>
+              task
+            </Title>
+            <Title size={35} c="orange.8" ff="poppins" fw={700} lts={-2} lh={2} ml={-15}>
+              PRO
+            </Title>
           </Group>
         </AppShell.Header>
-        <AppShell.Navbar p="md" bg={'gray.0'}>
-          <Navbar/>
+        <AppShell.Navbar withBorder={true} py="md" bg="gray.0">
+          <Navbar />
         </AppShell.Navbar>
-        <AppShell.Main bg={'gray.0'}>
-        <ProjectsCarousel/>
-        <InProgressTasks userId={userId} />
-        
+        <AppShell.Main bg="gray.0">
+          <Routes>
+            <Route path="/" element={<Dashboard/>} />
+            <Route path="/user-projects" element={<UserProjects/>} />
+            <Route path='user-projects/project/:projectId' element={<ProjectPage/>} />
+            <Route path='projects/create' element={<CreateNewProject/>} />
+          </Routes>
         </AppShell.Main>
       </AppShell>
-    );
-}
+    </Router>
+  );
+};
 
-export default AppLayout
+export default AppLayout;

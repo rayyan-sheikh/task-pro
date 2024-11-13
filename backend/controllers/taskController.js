@@ -1,4 +1,5 @@
 const Task = require('../models/task');
+const { getTasksByProjectId } = require('../queries/getTasksByProjectId');
 const UserPendingTasksQueries = require('../queries/userInProgressTasksQueries');
 
 const taskController = {
@@ -110,6 +111,17 @@ const taskController = {
       res.status(500).json({ message: 'Error fetching in progress tasks' });
     }
   },
+
+  getTasksByProjectId: async (req, res) =>{
+    const projectId= req.params.projectId
+    try {
+      const tasks = await getTasksByProjectId(projectId);
+      res.status(200).json(tasks);
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ message: 'Error fetching tasks' });
+    }
+  }
 };
 
 module.exports = taskController;

@@ -23,6 +23,36 @@ const projectMemberController = {
     }
   },
 
+  addMembersToProject: async (req, res) => {
+    try {
+      const { projectId } = req.params; // Project ID from URL params
+      const { userIds, role = 'member' } = req.body; // userIds array and optional role from request body
+  
+      // Validate input
+      if (!Array.isArray(userIds) || userIds.length === 0) {
+        return res.status(400).json({ message: "userIds must be a non-empty array" });
+      }
+  
+      if (!projectId) {
+        return res.status(400).json({ message: "Project ID is required" });
+      }
+  
+      // Call service function to add members
+      const addedMembers = await ProjectMember.addMembers(userIds, projectId, role);
+  
+      // Check if members were added successfully
+      if (addedMembers.length === 0) {
+        return res.status(409).json({ message: "No members were added (they may already exist in the project)" });
+      }
+  
+      // Respond with the added members
+      res.status(201).json({ message: "Members added successfully", data: addedMembers });
+    } catch (error) {
+      console.error("Error adding members to project:", error);
+      res.status(500).json({ message: "Internal server error" });
+    }
+  },
+
   // Remove a member from a project
   removeMember: async (req, res) => {
     try {

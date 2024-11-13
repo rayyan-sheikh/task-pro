@@ -5,6 +5,7 @@ import '@mantine/carousel/styles.css';
 import '@mantine/charts/styles.css';
 import InProgressTasks from './components/InProgressTasks';
 import AppLayout from './pages/AppLayout';
+import '@mantine/dates/styles.css';
 
 function App() {
 

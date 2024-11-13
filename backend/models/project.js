@@ -9,7 +9,7 @@ const Project = {
         name VARCHAR(100) NOT NULL,
         description TEXT,
         createdBy UUID REFERENCES users(id) ON DELETE SET NULL,
-        status VARCHAR(50) DEFAULT 'ongoing',
+        status VARCHAR(50) DEFAULT 'active',
         deadline DATE,
         createdAt TIMESTAMP DEFAULT NOW(),
         updatedAt TIMESTAMP DEFAULT NOW()
@@ -26,7 +26,7 @@ const Project = {
       // Insert the project into the projects table
       const query = `
         INSERT INTO projects (name, description, createdBy, status, deadline)
-        VALUES ($1, $2, $3, $4, $5)
+        VALUES ($1, $2, $3, COALESCE($4, 'active'), $5)
         RETURNING id, name, description, createdBy, status, deadline;  -- Return more details
       `;
       const values = [name, description, createdBy, status, deadline];
@@ -89,6 +89,24 @@ const Project = {
     const result = await pool.query(query, [id]);
     return result.rows[0];
   },
+
+  getProjectsByUserId: async (userId) => {
+    const query = `
+      SELECT p.name AS projectName, p.id AS projectId, p.updatedAt
+      FROM projects p
+      INNER JOIN project_members pm ON p.id = pm.projectId
+      WHERE pm.userId = $1
+    `;
+  
+    try {
+      const result = await pool.query(query, [userId]);
+      return result.rows;
+    } catch (error) {
+      console.error('Error fetching projects for user:', error);
+      throw new Error('Unable to fetch projects');
+    }
+  },
+  
 
   // Add other necessary methods for the Project model
 };

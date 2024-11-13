@@ -33,4 +33,80 @@ export const markTaskCompleted = async (taskId) => {
     }
   };
 
-// Add more API functions as needed
+
+  export const getProjectsByUserId = async (userId) => {
+    try {
+      const response = await axiosInstance.get(`/api/projects/all/${userId}`);
+      return response.data;
+    } catch (error) {
+      console.error('Error fetching Projects by User id');
+      throw error;
+    }
+  }
+
+  export const createProject = async(projectData) => {
+    try {
+      const response = await axiosInstance.post(`/api/projects`, projectData);
+      return response.data;
+    } catch (error) {
+      console.error('Error creating project:', error);
+    throw error;
+    }
+  }
+
+  export const getAllUsers = async()=>{
+    try {
+      const response = await axiosInstance.get('/api/users');
+      return response.data
+    } catch (error) {
+      console.error('Error fetching Users: ', error);
+      throw error;
+    }
+  }
+
+  export const getUserbyId = async(userId)=>{
+    try {
+      const response = await axiosInstance.get(`/api/users/${userId}`);
+      return response.data;
+    } catch (error) {
+      console.error('Error getting the user: ', error)
+      throw error;
+    }
+  }
+
+
+  export const addProjectMembers = async (userIds, projectId) => {
+    try {
+      // Send userIds array and role to the backend, default role is 'member'
+      const response = await axiosInstance.post(`/api/project-members/${projectId}/members`, {
+        userIds,
+        role: 'member',
+      });
+  
+      return response.data;
+    } catch (error) {
+      console.error('Error adding project members:', error);
+      throw error;
+    }
+  };
+
+  export const getProjectById = async(projectId)=>{
+    try {
+      const response = await axiosInstance.get(`/api/projects/${projectId}`);
+      return response.data;
+    } catch (error) {
+      console.error('Error getting this project: ', error)
+      throw error;
+    }
+  }
+
+  export const getTasksByProjectId = async(projectId)=>{
+    try {
+      const response = await axiosInstance.get(`/api/tasks/project/${projectId}`);
+      return response.data;
+    } catch (error) {
+      console.error('Error getting tasks: ', error)
+      throw error;
+    }
+  }
+ 

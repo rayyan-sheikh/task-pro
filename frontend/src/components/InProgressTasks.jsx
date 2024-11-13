@@ -85,23 +85,31 @@ const InProgressTasks = ({ userId }) => {
 
   if (loading) {
     return (
-      <div>
-        <h2>In-Progress Tasks</h2>
-        <Text>Loading in-progress tasks...</Text>
+      <Paper shadow="xl" radius="md" withBorder p={20} bg={"gray.0"}  >
+        <Title size="h1" c={'dark.6'} ff={'poppins'} mb={10} fw={600} lts={-2} lh={2}>
+        Tasks in Progress
+      </Title>
+        <Text>Loading tasks...</Text>
         <Skeleton height={35} mt={20} radius="xl" />
         <Skeleton height={35} mt={20} radius="xl" />
         <Skeleton height={35} mt={20} radius="xl" />
         <Skeleton height={35} mt={20} radius="xl" />
-      </div>
+      </Paper>
     );
   }
 
   if (error) {
-    return <Text color="red">{error}</Text>;
+    return <Paper shadow="xl" radius="md" withBorder p={20} bg={"gray.0"}  >
+     <Title size="h1" c={'dark.6'} ff={'poppins'} mb={10} fw={600} lts={-2} lh={2}>
+        Tasks in Progress
+      </Title>
+    <Text fz={20} c={'red.9'} fw={500}>{error}</Text>
+    </Paper>
   }
 
   return (
     <Paper shadow="xl" radius="md" withBorder p={20} bg={"gray.0"}  >
+      
       <Title size="h1" c={'dark.6'} ff={'poppins'} mb={10} fw={600} lts={-2} lh={2}>
         Tasks in Progress
       </Title>

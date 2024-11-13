@@ -14,4 +14,6 @@ router.put('/project-members/:projectId/:userId', projectMemberController.editMe
 // Route to list all members in a project
 router.get('/project-members/:projectId', projectMemberController.listMembers);
 
+router.post('/project-members/:projectId/members', projectMemberController.addMembersToProject);
+
 module.exports = router;

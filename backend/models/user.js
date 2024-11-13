@@ -48,9 +48,9 @@ const User = {
 
 // Get a user by ID
 getUserById: async (id) => {
-    const query = `SELECT id, name, email, profilePicUrl, gender, createdAt FROM users WHERE id = $1;`;
-    const result = await pool.query([id]);
-    return result.rows[0];
+  const query = `SELECT id, name, email, profilePicUrl, gender, createdAt FROM users WHERE id = $1;`;
+  const result = await pool.query(query, [id]);
+  return result.rows[0];
 },
 
 // Update a user by ID

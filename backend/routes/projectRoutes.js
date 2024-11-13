@@ -22,4 +22,6 @@ router.post('/projects/:projectId/members', projectController.addMemberToProject
 
 router.get('/projects/summary/:userId', projectController.fetchProjectSummary);
 
+router.get('/projects/all/:userId', projectController.getProjectsByUseId );
+
 module.exports = router;

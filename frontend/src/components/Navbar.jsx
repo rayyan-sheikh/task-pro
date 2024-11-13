@@ -1,37 +1,25 @@
-import { NavLink, Stack, Title } from '@mantine/core'
+import { Box, NavLink, Stack, Title } from '@mantine/core'
 import React from 'react'
+import {NavLink as RouterNavLink} from 'react-router-dom'
 
 const Navbar = () => {
   return (
-    <Stack
-      h={100}
-      align="start"
-      justify="start"
-      gap="xs"
-      py={20}
-      px={10}
-    >
-      <NavLink
-        href="#required-for-focus"
-        label="Dashboard"
-        c={'orange'}
-        active
-      />
+  <Box pt={20}>
       
-       <NavLink
-        href="#required-for-focus"
-        label="Projects"
-        
-        
-      />
-       <NavLink
-        href="#required-for-focus"
-        label="Tasks"
-        
-        
-      />
-      
-      </Stack>
+      <NavLink component={RouterNavLink} to="/" label="Dashboard" color="orange.8"  
+      variant="filled" fw={500} />
+      <NavLink component={RouterNavLink} to="/project" label="Projects" color="orange.8"
+      variant="filled" fw={500}>
+        <NavLink component={RouterNavLink} to="/user-projects" label="Your Projects" color="orange.8"
+      variant="filled" fw={500}/>
+        <NavLink component={RouterNavLink} to="/projects/create" label="Create New Project" color="orange.8"
+      variant="filled" fw={500}/>
+      </NavLink>
+      <NavLink component={RouterNavLink} to="/tasks" label="Tasks" color="orange.8"
+      variant="filled" fw={500} />
+
+      </Box>
+  
   )
 }
 
