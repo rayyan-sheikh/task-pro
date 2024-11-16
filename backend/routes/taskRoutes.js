@@ -9,8 +9,9 @@ router.get('/tasks/:id', taskController.getTaskById);
 router.put('/tasks/:id', taskController.updateTask);
 router.delete('/tasks/:id', taskController.deleteTask);
 router.get('/tasks/users/:id/in-progress-tasks', taskController.getInProgressTasksForUser);
-router.put('/tasks/:id/status', taskController.changeTaskStatus);
+router.put('/tasks/:taskId/:status', taskController.changeTaskStatus);
 router.get('/tasks/project/:projectId', taskController.getTasksByProjectId);
+
 
 
 

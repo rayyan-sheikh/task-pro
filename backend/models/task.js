@@ -53,14 +53,14 @@ const Task = {
     return result.rows[0];
   },
 
-  changeTaskStatus: async (id, status) => {
+  changeTaskStatus: async (taskId, status) => {
     const query = `
       UPDATE tasks
       SET status = $1, updatedAt = NOW()
       WHERE id = $2
       RETURNING *;
     `;
-    const values = [status, id];
+    const values = [status, taskId];
     const result = await pool.query(query, values);
     return result.rows[0];
   },

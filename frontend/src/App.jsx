@@ -7,13 +7,16 @@ import InProgressTasks from './components/InProgressTasks';
 import AppLayout from './pages/AppLayout';
 import '@mantine/dates/styles.css';
 
+
 function App() {
 
 
   return (
-    <div>
+    
+
       <AppLayout/>
-    </div>
+
+    
   )
 }
 

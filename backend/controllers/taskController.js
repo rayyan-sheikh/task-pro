@@ -1,5 +1,6 @@
 const Task = require('../models/task');
 const { getTasksByProjectId } = require('../queries/getTasksByProjectId');
+const getTaskInfo = require('../queries/getTaskUsers');
 const UserPendingTasksQueries = require('../queries/userInProgressTasksQueries');
 
 const taskController = {
@@ -64,8 +65,8 @@ const taskController = {
 
   changeTaskStatus: async (req, res) => {
     try {
-      const { id } = req.params; // Get the task ID from the request parameters
-      const { status } = req.body; // Get the new status from the request body
+      const { taskId, status } = req.params; // Get the task ID from the request parameters
+      
   
       // Check if the status is provided
       if (!status) {
@@ -73,7 +74,7 @@ const taskController = {
       }
   
       // Update the task status using the Task model's changeTaskStatus method
-      const changedTaskStatus = await Task.changeTaskStatus(id, status);
+      const changedTaskStatus = await Task.changeTaskStatus(taskId, status);
       
       // Check if the task was found and updated
       if (!changedTaskStatus) {
@@ -120,6 +121,17 @@ const taskController = {
     } catch (error) {
       console.error(error);
       res.status(500).json({ message: 'Error fetching tasks' });
+    }
+  },
+
+  getTaskUsers: async(req, res) =>{
+    const projectId= req.params.projectId
+    const taskId= req.params.taskId
+    try {
+      const result = await getTaskInfo.getTaskUsers(taskId, projectId);
+      res.status(200).json(result);
+    } catch (error) {
+      res.status(500).json({ message: 'Error fetching tasks and users' });
     }
   }
 };

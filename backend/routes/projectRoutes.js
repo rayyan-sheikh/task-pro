@@ -2,6 +2,7 @@
 const express = require('express');
 const router = express.Router();
 const projectController = require('../controllers/projectController');
+const taskController = require('../controllers/taskController');
 
 // Route to create a new project
 router.post('/projects/', projectController.createProject);
@@ -23,5 +24,11 @@ router.post('/projects/:projectId/members', projectController.addMemberToProject
 router.get('/projects/summary/:userId', projectController.fetchProjectSummary);
 
 router.get('/projects/all/:userId', projectController.getProjectsByUseId );
+
+router.get('/projects/project-members/:projectId', projectController.getProjectMembers);
+
+router.get('/projects/:projectId/task/:taskId', taskController.getTaskUsers);
+
+router.get('/projects/admins/:projectId', projectController.getProjectAdmins);
 
 module.exports = router;

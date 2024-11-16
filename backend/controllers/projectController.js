@@ -1,5 +1,7 @@
 const Project = require("../models/project");
 const ProjectMember = require('../models/projectMember');
+const { getProjectAdminsQuery } = require("../queries/getProjectAdmins");
+const { getProjectMembers } = require("../queries/getProjectMembers");
 const { getProjectSummaryForUser } = require("../queries/getProjectSummaryForUser");
 
 const projectController = {
@@ -131,6 +133,30 @@ const projectController = {
     res.status(500).json({ error: 'Failed to fetch projects by user id.' });
     }
   },
+
+  getProjectMembers: async(req, res)=> {
+    const{projectId} = req.params;
+
+    try {
+      const projectMembers= await getProjectMembers(projectId)
+      res.status(200).json(projectMembers)
+    } catch (error) {
+      console.error('Error fetching project Members:', error);
+    res.status(500).json({ error: 'Failed to fetch project members' });
+    }
+  },
+
+  getProjectAdmins: async(req, res)=>{
+    const {projectId} = req.params;
+
+    try {
+      const admins = await getProjectAdminsQuery(projectId)
+      res.status(200).json(admins)
+    } catch (error) {
+      console.error('Error fetching project admins:', error);
+    res.status(500).json({ error: 'Failed to fetch project admins' });
+    }
+  }
 };
 
 

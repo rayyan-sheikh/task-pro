@@ -1,3 +1,4 @@
+
 import axiosInstance from './axiosInstance';
 
 export const getInProgressTasks = async (userId) => {
@@ -11,15 +12,13 @@ export const getInProgressTasks = async (userId) => {
   }
 };
 
-export const markTaskCompleted = async (taskId) => {
+export const markTaskCompleted = async (taskId, status) => {
     try {
-      const response = await axiosInstance.put(`/api/tasks/${taskId}/status`, {
-        status: 'completed',
-      });
-      return response.data; // Return the updated task data
+      const response = await axiosInstance.put(`/api/tasks/${taskId}/${status}`);
+      return response.data;
     } catch (error) {
       console.error('Error marking task as completed:', error);
-      throw error; // Rethrow the error for handling in the component
+      throw error;
     }
   };
 
@@ -109,4 +108,35 @@ export const markTaskCompleted = async (taskId) => {
       throw error;
     }
   }
+
+  export const getProjectMembers = async(projectId)=>{
+    try {
+      const response = await axiosInstance.get(`/api/projects/project-members/${projectId}`);
+      return response.data;
+    } catch (error) {
+      console.error('Error getting members: ', error)
+      throw error;
+    }
+  }
  
+
+  export const getTaskUsers = async(taskId, projectId)=>{
+    try {
+      const response = await axiosInstance.get(`/api/projects/${projectId}/task/${taskId}`);
+      return response.data;
+    } catch (error) {
+      console.error('Error getting task and members: ', error)
+      throw error;
+    }
+  }
+
+
+  export const getProjectAdmins = async(projectId) =>{
+    try {
+      const response = await axiosInstance.get(`/api/projects/admins/${projectId}`);
+      return response.data;
+    } catch (error) {
+      console.error('Error getting project admins: ', error)
+      throw error;
+    }
+  }

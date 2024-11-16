@@ -10,17 +10,20 @@ import {
 import ProjectPageDescription from "../components/ProjectPageDescription";
 import { useParams } from "react-router-dom";
 import {
+  getProjectAdmins,
   getProjectById,
   getTasksByProjectId,
   getUserbyId,
 } from "../apiService";
 import ProjectPageTasks from "../components/ProjectPageTasks";
 import ProjectPageProgressBar from "../components/ProjectPageProgressBar";
+import ProjectPageMembers from "../components/ProjectPageMembers";
 
 const ProjectPage = () => {
   const [project, setProject] = useState(null);
   const [creator, setCreator] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [admins, setAdmins] = useState([])
   const { projectId } = useParams();
 
   useEffect(() => {
@@ -61,7 +64,36 @@ const ProjectPage = () => {
     fetchTasks();
   }, [projectId]);
 
+  useEffect(() => {
+    const fetchProjectAdmins = async () => {
+      try {
+        const fetchedAdmins = await getProjectAdmins(projectId);
+        setAdmins(fetchedAdmins);
+
+      } catch (error) {
+        console.error("Error fetching project admins: ", error);
+      }
+    };
+
+    fetchProjectAdmins();
+  }, [projectId]);
+
+
+
   const iconStyle = { width: rem(14), height: rem(14) };
+
+  function badgeGradient(status) {
+    if (status === "active") {
+      return { from: "blue.5", to: "blue.8", deg: 88 };
+    }
+    if (status === "completed") {
+      return { from: "green.5", to: "green.9", deg: 90 };
+    }
+    if (status === "overdue") {
+      return { from: "orange.6", to: "red.9", deg: 78 };
+    }
+    return { from: "gray.4", to: "gray.6", deg: 90 }; // Default gradient for undefined status
+  }
 
   if (loading) {
     return <div>Loading...</div>;
@@ -78,9 +110,9 @@ const ProjectPage = () => {
           mt={5}
           size="md"
           variant="gradient"
-          gradient={{ from: "green.5", to: "green.9", deg: 88 }}
+          gradient={badgeGradient(project.status)}
         >
-          Completed
+          {project.status}
         </Badge>
       </Flex>
       <Tabs color="orange" defaultValue="description" mt={10}>
@@ -107,13 +139,15 @@ const ProjectPage = () => {
 
         <Tabs.Panel value="description">
           <ProjectPageProgressBar tasks={tasks} />
-          <ProjectPageDescription project={project} creator={creator} />
+          <ProjectPageDescription project={project} admins={admins} creator={creator} />
 
-          <ProjectPageTasks tasks={tasks} />
+          <ProjectPageTasks tasks={tasks} admins={admins} projectId={projectId} />
         </Tabs.Panel>
 
         <Tabs.Panel value="messages">Messages tab content</Tabs.Panel>
-        <Tabs.Panel value="members">Members tab content</Tabs.Panel>
+        <Tabs.Panel value="members">
+          <ProjectPageMembers admins={admins} projectId={projectId}/>
+        </Tabs.Panel>
       </Tabs>
     </Box>
   );

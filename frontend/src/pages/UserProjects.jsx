@@ -148,7 +148,7 @@ const UserProjects = () => {
                   </Card.Section>
 
                   <Group justify="space-between" mt="md" mb={0}>
-                    <Text fz={17} c={'dark.6'} fw={500}>{project.projectname}</Text>
+                    <Text fz={17} lineClamp={1} c={'dark.6'} fw={500}>{project.projectname}</Text>
                     <Flex align={'center'} gap={2} c="dark.2" fw={500} fz={11}>{latestIcon} Updated {utils.timeConverter(project.updatedat)} ago</Flex>
                   </Group>
                 </Card>

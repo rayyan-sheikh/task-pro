@@ -6,6 +6,7 @@ import Dashboard from './Dashboard';
 import UserProjects from './UserProjects';
 import ProjectPage from './ProjectPage';
 import CreateNewProject from './CreateNewProject';
+import TaskPage from './TaskPage';
 
 const AppLayout = () => {
   const [opened, { toggle }] = useDisclosure();
@@ -42,6 +43,7 @@ const AppLayout = () => {
             <Route path="/user-projects" element={<UserProjects/>} />
             <Route path='user-projects/project/:projectId' element={<ProjectPage/>} />
             <Route path='projects/create' element={<CreateNewProject/>} />
+            <Route path='/user-projects/:projectId/task/:taskId' element={<TaskPage/>} />
           </Routes>
         </AppShell.Main>
       </AppShell>

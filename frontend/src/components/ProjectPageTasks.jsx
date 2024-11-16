@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from "react";
-import { getTasksByProjectId } from "../apiService";
+import React, { useContext, useState } from "react";
 import {
+  Modal,
   Avatar,
   Badge,
   Box,
@@ -11,14 +11,13 @@ import {
   Title,
 } from "@mantine/core";
 import { useNavigate } from "react-router-dom";
+import { useDisclosure } from "@mantine/hooks";
+import TaskPage from "../pages/TaskPage";
+import { modals } from "@mantine/modals";
 
-const ProjectPageTasks = ({ tasks }) => {
+const ProjectPageTasks = ({ tasks, projectId, admins }) => {
   const [filter, setFilter] = useState("all");
-  const navigate = useNavigate()
-
-  const navigateToTask = (taskId)=>{
-    navigate(`/tasks/task/${taskId}`)
-  }
+  const [selectedTaskId, setSelectedTaskId] = useState(null);
 
   function formatDate(isoDate) {
     const date = new Date(isoDate);
@@ -34,15 +33,28 @@ const ProjectPageTasks = ({ tasks }) => {
     return "gray";
   }
 
-  const filteredTasks =
-    tasks &&
-    tasks.filter((task) => {
-      if (filter === "all") return true;
-      return task.task_status === filter;
+  const filteredTasks = tasks?.filter((task) => {
+    if (filter === "all") return true;
+    return task.task_status === filter;
+  });
+
+  function isUserAdmin(userId) {
+    return admins.some((admin) => admin.id === userId);
+  }
+ 
+
+  const handleTaskClick = (taskId) => {
+    modals.open({
+      title: "Task Details",
+      children: <TaskPage projectId={projectId} taskId={taskId} admins={admins} />,
+      size: "auto",
+      centered: true,
     });
+  };
+
 
   return (
-    <Box shadow="xl" radius="md"  bg={"gray.0"} m={20}>
+    <Box shadow="xl" radius="md" bg={"gray.0"} m={20}>
       <Title ff={"poppins"} c={"dark.4"} fz={25} fw={600} lts={-1} lh={2}>
         Tasks
       </Title>
@@ -58,8 +70,8 @@ const ProjectPageTasks = ({ tasks }) => {
             All
           </Button>
           <Button
-            variant={"filled"}
             radius={0}
+            variant={"filled"}
             onClick={() => setFilter("completed")}
             bg={filter === "completed" ? "orange.7" : "orange.0"}
             c={filter === "completed" ? "gray.0" : "orange.8"}
@@ -67,8 +79,8 @@ const ProjectPageTasks = ({ tasks }) => {
             Completed
           </Button>
           <Button
-            variant={"filled"}
             radius={0}
+            variant={"filled"}
             onClick={() => setFilter("in progress")}
             bg={filter === "in progress" ? "orange.7" : "orange.0"}
             c={filter === "in progress" ? "gray.0" : "orange.8"}
@@ -112,9 +124,9 @@ const ProjectPageTasks = ({ tasks }) => {
             >
               {filteredTasks.map((task, index) => (
                 <Paper
-                style={{cursor: "pointer"}}
-                onClick={() => navigateToTask(task.task_id)}
-                  key={task.id || `task-${index}`}
+                  style={{ cursor: "pointer" }}
+                 onClick={() => handleTaskClick(task.task_id)}
+                  key={task.task_id || `task-${index}`}
                   shadow="sm"
                   radius="md"
                   withBorder

@@ -16,7 +16,7 @@ import { getUserbyId } from "../apiService";
 import utils from "../utils/utils";
 import ProjectPageTasks from "./ProjectPageTasks";
 
-const ProjectPageDescription = ({ project, creator }) => {
+const ProjectPageDescription = ({ project, creator, admins }) => {
 
   const createdAt = utils.timeConverter(project.createdat);
 
@@ -46,7 +46,7 @@ const ProjectPageDescription = ({ project, creator }) => {
           style={{ color: "#e8590c" }}
           size="lg"
         >
-          Deadline:{formatDate(project.deadline)}
+          Deadline: {formatDate(project.deadline)}
         </Badge>
         </Flex>
         <Flex align={"center"} gap={7} mt={10}>
