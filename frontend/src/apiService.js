@@ -140,3 +140,14 @@ export const markTaskCompleted = async (taskId, status) => {
       throw error;
     }
   }
+
+  export const createTask = async(taskData) =>{
+    try {
+      
+      const response = await axiosInstance.post(`/api/tasks/`, taskData);
+      return response.data;
+    } catch (error) {
+      console.error('Error creating task:', error);
+    throw error;
+    }
+  }

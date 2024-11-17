@@ -1,51 +1,43 @@
-import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
-import { useDisclosure } from "@mantine/hooks";
-import { getTaskUsers, markTaskCompleted } from "../apiService";
+import React, { useContext } from "react";
 import {
   Avatar,
   Badge,
   Box,
   Button,
   Flex,
-  Modal,
-  Paper,
-  Popover,
   Select,
-  Tabs,
   Text,
   Title,
+  Breadcrumbs,
+  Anchor,
+  Tooltip,
+  Menu,
   rem,
 } from "@mantine/core";
+import { TaskContext } from "../contexts/TaskContext.jsx";
 import { modals } from "@mantine/modals";
+import { markTaskCompleted } from "../apiService.js";
+import { useNavigate } from "react-router-dom";
+import {
+  IconArrowLeft,
+  IconCircleCheck,
+  IconClockX,
+  IconDotsVertical,
+  IconEdit,
+  IconEditCircle,
+  IconTrash,
+  IconTrendingUp,
+} from "@tabler/icons-react";
 
-const TaskPage = ({ projectId, taskId, admins }) => {
-  // const { projectId, taskId } = useParams();
+const TaskPage = () => {
+  const { task, admins, loading, error, setTaskData, projectId } =
+    useContext(TaskContext);
 
-  const [taskDetails, setTaskDetails] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-
+  const navigate = useNavigate();
+  // const loggedInUser = "fea52074-7cf8-4f6e-b1f9-e69b6b8dacdc";
   const loggedInUser = "459fb193-bdc9-4526-a98c-753c88dbbc00";
-  // const [selectedStatus, setSelectedStatus] = useState('null');
 
-  useEffect(() => {
-    const fetchTaskUsers = async () => {
-      try {
-        setLoading(true);
-        const data = await getTaskUsers(taskId, projectId);
-        setTaskDetails(data);
-      } catch (error) {
-        setError("Error fetching task and members");
-        console.error("Error fetching task and members:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchTaskUsers();
-  }, [taskId, projectId]);
-
+  // Helper functions
   function badgeColor(status) {
     if (status === "in progress") return "blue";
     if (status === "completed") return "green.8";
@@ -56,9 +48,11 @@ const TaskPage = ({ projectId, taskId, admins }) => {
   function isAssignedUser(userId) {
     return userId === loggedInUser;
   }
+
   function isUserAdmin(userId) {
     return admins.some((admin) => admin.id === userId);
   }
+
   function formatDate(isoDate) {
     const date = new Date(isoDate);
     const day = date.getUTCDate();
@@ -66,149 +60,222 @@ const TaskPage = ({ projectId, taskId, admins }) => {
     return `${day} ${month}`;
   }
 
-  // const handleMarkAsCompleted = async (taskId) => {
-  //   try {
-  //     const updatedTask = await markTaskCompleted(taskId, "completed");
-
-  //     setTaskDetails((prevState) =>
-  //       prevState.map((task) =>
-  //         task.task_id === taskId ? { ...task, task_status: "completed" } : task
-  //       )
-  //     );
-  //   } catch (error) {
-  //     console.error("Error marking task as completed:", error);
-  //   }
-  // };
-
   const handleChangeStatus = async (taskId, status) => {
-    console.log(`Updating task ${taskId} to status: ${status}`);
     try {
-      const updatedTask = await markTaskCompleted(taskId, status); // Assuming this API handles different statuses
+      const updatedTask = await markTaskCompleted(taskId, status); // API call
 
-      // Update task status in the state
-      setTaskDetails((prevState) =>
-        prevState.map((task) =>
-          task.task_id === taskId ? { ...task, task_status: status } : task
-        )
-      );
+      // Update task status in the context
+      setTaskData((prevData) => ({
+        ...prevData,
+        task: prevData.task.map((taskItem) =>
+          taskItem.task_id === taskId
+            ? { ...taskItem, task_status: status }
+            : taskItem
+        ),
+      }));
+
     } catch (error) {
       console.error("Error updating task status:", error);
     }
   };
 
-  const openMarkAsStatusModal = (taskId) => {
-    // Available statuses
-    const statusOptions = [
-      { value: "completed", label: "Completed" },
-      { value: "in progress", label: "In Progress" },
-      { value: "overdue", label: "Overdue" },
-    ];
 
-    let selectedStatus = null; // Local variable for the selected status
 
-    // Open the confirm modal
-    modals.openConfirmModal({
-      title: "Update Task Status",
-      centered: true,
-      children: (
-        <>
-          <Text c={"dark.4"} ff={"poppins"} fw={500}>
-            Please select the new status for this task:
-          </Text>
-          <Select
-            placeholder="Pick one"
-            data={statusOptions}
-            onChange={(value) => (selectedStatus = value)} // Update local variable
-            style={{ marginTop: 20 }}
-          />
-        </>
-      ),
-      labels: { confirm: "Update", cancel: "Cancel" },
-      confirmProps: { color: "orange.8" },
-      onConfirm: () => {
-        if (!selectedStatus) {
-          console.error("No status selected!");
-          return;
-        }
-        handleChangeStatus(taskId, selectedStatus); // Call the status change handler
-      },
-    });
-  };
+  const items = [
+    { title: "Your Projects", path: `/user-projects` },
+    {
+      title: task?.[0]?.project_name || "Project",
+      path: `/user-projects/project/${projectId}`,
+    },
+    {
+      title: task?.[0]?.task_name || "Task",
+      path: `/user-projects/${projectId}/task/${task?.[0]?.task_id}`,
+    },
+  ].map((item, index) => (
+    <Anchor
+      onClick={(e) => {
+        e.preventDefault(); // Prevent default anchor behavior
+        navigate(item.path); // Navigate programmatically
+      }}
+      key={index}
+      component="button" // Mantine will style it as an anchor but it's a button
+    >
+      {item.title}
+    </Anchor>
+  ));
 
   if (loading) return <div>Loading...</div>;
   if (error) return <div>Oops! {error}. Please try again</div>;
-  if (!taskDetails) return <div>No data found</div>;
+  if (!task) return <div>No task data found</div>;
+
   return (
     <Box>
-      {/* <Title size="h1" c={"dark.6"} ff={"poppins"} fw={600} pb={10} mt={-20} lts={-2}>
-        Task Details
-      </Title> */}
-
-      <Box withBorder p="md" w={600}>
+      <Box
+        p="md"
+        w={"100%"}
+      >
+        <Breadcrumbs
+          styles={{
+            breadcrumb: {
+              color: "#e8590c",
+              fontWeight: 600,
+            },
+          }}
+          mb={20}
+        >
+          {items}
+        </Breadcrumbs>
         <Flex align={"start"}>
           <Flex direction={"column"} flex={1}>
-            <Title size="h2" c={"dark.6"} ff={"poppins"} fw={600} lts={-2}>
-              {taskDetails[0].task_name}
-            </Title>
-            <Text c={"dark.4"} ff={"poppins"} fw={500}>
-              Project: {taskDetails[0].project_name}
-            </Text>
-
+            
+              <Title size={32} c={"dark.6"} ff={"poppins"} fw={600} lts={-2}>
+                {task[0].task_name}
+              </Title>
+              
+            
+            <Text c={"orange.8"} fz={22} ff={"poppins"} fw={600} mb={15}>
+                {task[0].project_name}
+              </Text>
             <Flex gap={5} align={"center"} mb={20}>
-              <Text c={"dark.4"} ff={"poppins"} fw={500}>
+              <Text c={"dark.4"} fz={21} ff={"poppins"} fw={500}>
                 Assigned to:{" "}
               </Text>
-              <Avatar src={taskDetails[0].user_profile_pic_url} size={20} />
-              <Text c={"dark.4"} ff={"poppins"} fw={500}>
-                {taskDetails[0].user_name}
+              <Avatar src={task[0].user_profile_pic_url} size={24} />
+              <Text c={"dark.4"} fz={21} ff={"poppins"} fw={500}>
+                {task[0].user_name}
               </Text>
             </Flex>
             <Badge
               variant="dot"
               color="orange.8"
               style={{ color: "#e8590c" }}
-              size="md"
+              size="lg"
             >
-              Task Deadline: {formatDate(taskDetails[0].task_deadline)}
+              Task Deadline: {formatDate(task[0].task_deadline)}
             </Badge>
           </Flex>
-          <Badge color={badgeColor(taskDetails[0].task_status)}>
-            {taskDetails[0].task_status}
-          </Badge>
+          <Flex align={"center"}>
+            <Badge color={badgeColor(task[0].task_status)}>
+              {task[0].task_status}
+            </Badge>
+            {(isUserAdmin(loggedInUser) || isAssignedUser(loggedInUser)) && (
+            <Menu width={200} shadow="lg">
+            <Menu.Target>
+              <Tooltip label="Options" withArrow position="top">
+                <IconDotsVertical
+                  color="#424242"
+                  size={20}
+                  style={{ cursor: "pointer" }}
+                />
+              </Tooltip>
+            </Menu.Target>
+
+            <Menu.Dropdown>
+              <Menu.Label>Change Status</Menu.Label>
+              <Menu.Item
+                onClick={() => {
+                  handleChangeStatus(task[0].task_id, "completed");
+                }}
+                color="#2f9e44"
+                ff={"poppins"}
+                fw={500}
+                leftSection={
+                  <IconCircleCheck
+                    style={{ width: rem(18), height: rem(18) }}
+                  />
+                }
+              >
+                Completed
+              </Menu.Item>
+              <Menu.Item
+                onClick={() => {
+                  handleChangeStatus(task[0].task_id, "in progress");
+                }}
+                color="blue"
+                ff={"poppins"}
+                fw={500}
+                leftSection={
+                  <IconTrendingUp
+                    style={{ width: rem(18), height: rem(18) }}
+                  />
+                }
+              >
+                In progress
+              </Menu.Item>
+              <Menu.Item
+                onClick={() => {
+                  handleChangeStatus(task[0].task_id, "overdue");
+                }}
+                color="red"
+                ff={"poppins"}
+                fw={500}
+                leftSection={
+                  <IconClockX style={{ width: rem(18), height: rem(18) }} />
+                }
+              >
+                Overdue
+              </Menu.Item>
+              {isUserAdmin(loggedInUser) && <Box>
+              <Menu.Divider />
+
+              <Menu.Label>Admin Options</Menu.Label>
+              <Menu.Item
+                onClick={() => {
+                  console.log("Edit Option Selected");
+                }}
+                color="#343a40"
+                ff={"poppins"}
+                fw={500}
+                leftSection={
+                  <IconEditCircle style={{ width: rem(18), height: rem(18) }} />
+                }
+              >
+                Edit
+              </Menu.Item>
+              <Menu.Item
+                onClick={() => {
+                  console.log("Delete Option Selected")
+                }}
+                color="red"
+                ff={"poppins"}
+                fw={500}
+                leftSection={
+                  <IconTrash style={{ width: rem(18), height: rem(18) }} />
+                }
+              >
+                Delete
+              </Menu.Item>
+              </Box>}
+              
+            </Menu.Dropdown>
+          </Menu>
+          )}
+            
+          </Flex>
         </Flex>
         <Text
           c={"dark.6"}
           ff={"poppins"}
           fz={16}
-          bg={"gray.1"}
           py={10}
           my={20}
           fw={500}
+          style={{ whiteSpace: "pre-wrap" }}
         >
-          {taskDetails[0].task_description}
+          {task[0].task_description}
         </Text>
 
         <Flex gap={5}>
-          {(isAssignedUser(taskDetails[0].task_assigned_to) ||
-            isUserAdmin(loggedInUser)) && (
-            <Button
-              variant="filled"
-              color="orange.8"
-              onClick={() => openMarkAsStatusModal(taskDetails[0].task_id)} // Call the modal with the taskId
-            >
-              Update Task Status
-            </Button>
-          )}
-          {isUserAdmin(loggedInUser) && (
-            <Flex gap={5}>
-              <Button variant="filled" color="orange.8">
-                Delete
-              </Button>
-              <Button variant="filled" color="orange.8">
-                Edit
-              </Button>
-            </Flex>
-          )}
+          <Button
+            onClick={() => {
+              navigate(`/user-projects/project/${projectId}`);
+            }}
+            variant="outline"
+            color="orange.8"
+            leftSection={<IconArrowLeft size={14} />}
+          >
+            Back to: {task[0].project_name}
+          </Button>
         </Flex>
       </Box>
     </Box>

@@ -1,6 +1,8 @@
 import {
+  Anchor,
   Badge,
   Box,
+  Breadcrumbs,
   Button,
   Card,
   Container,
@@ -36,9 +38,9 @@ const UserProjects = () => {
   const [userProjects, setUserProjects] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [searchTerm, setSearchTerm] = useState("");  // For search input
+  const [searchTerm, setSearchTerm] = useState(""); // For search input
   const [sortOrder, setSortOrder] = useState("latest"); // For sort order
-  const userId = '31b559bc-1197-4428-b76b-bc968e57b16e';
+  const userId = "31b559bc-1197-4428-b76b-bc968e57b16e";
 
   const navigate = useNavigate();
 
@@ -58,10 +60,10 @@ const UserProjects = () => {
     fetchData();
   }, [userId]);
 
-
-  const imgUrl = `https://raw.githubusercontent.com/mantinedev/mantine/master/.demo/images/bg-`
+  const imgUrl = `https://raw.githubusercontent.com/mantinedev/mantine/master/.demo/images/bg-`;
   const imageUrls = [
-    `${imgUrl}1.png`, `${imgUrl}2.png`,
+    `${imgUrl}1.png`,
+    `${imgUrl}2.png`,
     `${imgUrl}3.png`,
     `${imgUrl}4.png`,
     `${imgUrl}5.png`,
@@ -70,7 +72,6 @@ const UserProjects = () => {
     `${imgUrl}8.png`,
     `${imgUrl}9.png`,
     `${imgUrl}10.png`,
-    
   ];
 
   // Filtered and sorted projects based on search and sort order
@@ -88,8 +89,34 @@ const UserProjects = () => {
       }
     });
 
+  const items = [{ title: "Your Projects", path: `/user-projects` }].map(
+    (item, index) => (
+      <Anchor
+        onClick={(e) => {
+          e.preventDefault(); // Prevent default anchor behavior
+          navigate(item.path); // Navigate programmatically
+        }}
+        key={index}
+        component="button" // Mantine will style it as an anchor but it's a button
+      >
+        {item.title}
+      </Anchor>
+    )
+  );
+
   return (
-    <Box>
+    <Box mt={20} pl={"md"}>
+      <Breadcrumbs
+        styles={{
+          breadcrumb: {
+            color: "#e8590c",
+            fontWeight: 600,
+          },
+        }}
+        mb={20}
+      >
+        {items}
+      </Breadcrumbs>
       <Title size="h1" color="dark.6" fontWeight={600} my={20}>
         Your Projects
       </Title>
@@ -109,16 +136,27 @@ const UserProjects = () => {
           />
           <Menu shadow="md" width={200}>
             <Menu.Target>
-              <Button h={40} px={5} bg="orange.8">{filterIcon}</Button>
+              <Button h={40} px={5} bg="orange.8">
+                {filterIcon}
+              </Button>
             </Menu.Target>
             <Menu.Dropdown>
-              <Menu.Item leftSection={latestIcon} onClick={() => setSortOrder("latest")}>
+              <Menu.Item
+                leftSection={latestIcon}
+                onClick={() => setSortOrder("latest")}
+              >
                 Last Modified
               </Menu.Item>
-              <Menu.Item leftSection={aToZIcon} onClick={() => setSortOrder("aToZ")}>
+              <Menu.Item
+                leftSection={aToZIcon}
+                onClick={() => setSortOrder("aToZ")}
+              >
                 Name Asc.
               </Menu.Item>
-              <Menu.Item leftSection={zToAIcon} onClick={() => setSortOrder("zToA")}>
+              <Menu.Item
+                leftSection={zToAIcon}
+                onClick={() => setSortOrder("zToA")}
+              >
                 Name Desc.
               </Menu.Item>
             </Menu.Dropdown>
@@ -131,14 +169,26 @@ const UserProjects = () => {
           </Flex>
         ) : error ? (
           <Flex justify="center" align="center" h="100%">
-            <Text color="red.8" fw={600} size="xl">{error}</Text>
+            <Text color="red.8" fw={600} size="xl">
+              {error}
+            </Text>
           </Flex>
         ) : (
           <ScrollArea w="100%" h="95%" pt={25}>
-            <Flex wrap="wrap" justify="start" gap={20}>
+            <Flex wrap="wrap" justify="start" gap={15}>
               {filteredProjects.map((project, index) => (
-                <Card key={project.projectid} shadow="sm" padding="lg" radius="md" withBorder w={190} onClick={() => navigate(`/user-projects/project/${project.projectid}`)}
-                  style={{ cursor: 'pointer' }}>
+                <Card
+                  key={project.projectid}
+                  shadow="sm"
+                  padding="lg"
+                  radius="md"
+                  withBorder
+                  w={190}
+                  onClick={() =>
+                    navigate(`/user-projects/project/${project.projectid}`)
+                  }
+                  style={{ cursor: "pointer" }}
+                >
                   <Card.Section>
                     <Image
                       src={imageUrls[index % imageUrls.length]}
@@ -148,8 +198,13 @@ const UserProjects = () => {
                   </Card.Section>
 
                   <Group justify="space-between" mt="md" mb={0}>
-                    <Text fz={17} lineClamp={1} c={'dark.6'} fw={500}>{project.projectname}</Text>
-                    <Flex align={'center'} gap={2} c="dark.2" fw={500} fz={11}>{latestIcon} Updated {utils.timeConverter(project.updatedat)} ago</Flex>
+                    <Text fz={17} lineClamp={1} c={"dark.6"} fw={500}>
+                      {project.projectname}
+                    </Text>
+                    <Flex align={"center"} gap={2} c="dark.2" fw={500} fz={11}>
+                      {latestIcon} Updated{" "}
+                      {utils.timeConverter(project.updatedat)} ago
+                    </Flex>
                   </Group>
                 </Card>
               ))}

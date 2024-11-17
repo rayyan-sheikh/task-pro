@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { getProjectMembers } from "../apiService";
 import {
   Avatar,
@@ -18,33 +18,17 @@ import {
 import { IconArrowsMoveVertical, IconUserDown } from "@tabler/icons-react";
 import { RiSortAlphabetAsc } from "react-icons/ri";
 import classes from "../Input.module.css";
+import { ProjectContext } from "../contexts/ProjectContext";
 
-const ProjectPageMembers = ({ projectId, admins }) => {
-  const [members, setMembers] = useState([]);
+const ProjectPageMembers = () => {
+
+  const { projectId, members } = useContext(ProjectContext)
+
   const [filteredMembers, setFilteredMembers] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
   const [search, setSearch] = useState("");
   const [sortBy, setSortBy] = useState("name");
   const [showAdmins, setShowAdmins] = useState(false);
 
-  useEffect(() => {
-    const fetchMembers = async () => {
-      try {
-        setLoading(true);
-        const fetchedMembers = await getProjectMembers(projectId);
-        setMembers(fetchedMembers);
-        setFilteredMembers(fetchedMembers);
-      } catch (error) {
-        setError("Error Fetching members");
-        console.error("Error Fetching members: ", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchMembers();
-  }, [projectId]);
 
   useEffect(() => {
     
@@ -80,8 +64,7 @@ const ProjectPageMembers = ({ projectId, admins }) => {
     setFilteredMembers(filteredList);
   }, [search, sortBy, showAdmins, members]);
 
-  if (loading) return <div>Loading...</div>;
-  if (error) return <div>{error}</div>;
+  
 
   return (
     <Box p={20}>

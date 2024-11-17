@@ -1,84 +1,50 @@
-import React, { useEffect, useState } from "react";
-import { Badge, Box, Flex, Tabs, Title, rem } from "@mantine/core";
+import React, { useContext } from "react";
+import { Anchor, Badge, Box, Breadcrumbs, Flex, Tabs, Title, rem } from "@mantine/core";
 import {
-  IconPhoto,
   IconMessageCircle,
-  IconStack,
   IconUsersGroup,
   IconFileDescription,
 } from "@tabler/icons-react";
 import ProjectPageDescription from "../components/ProjectPageDescription";
-import { useParams } from "react-router-dom";
-import {
-  getProjectAdmins,
-  getProjectById,
-  getTasksByProjectId,
-  getUserbyId,
-} from "../apiService";
 import ProjectPageTasks from "../components/ProjectPageTasks";
 import ProjectPageProgressBar from "../components/ProjectPageProgressBar";
 import ProjectPageMembers from "../components/ProjectPageMembers";
+import { ProjectContext, ProjectProvider } from "../contexts/ProjectContext";
+import { useNavigate } from "react-router-dom";
 
-const ProjectPage = () => {
-  const [project, setProject] = useState(null);
-  const [creator, setCreator] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [admins, setAdmins] = useState([])
-  const { projectId } = useParams();
+const ProjectPageContent = () => {
+  const { project, tasks, admins, creator, members, loading, error, projectId } =
+    useContext(ProjectContext);
 
-  useEffect(() => {
-    const fetchProjectAndCreator = async () => {
-      try {
-        const fetchedProject = await getProjectById(projectId);
-        setProject(fetchedProject);
+    const navigate = useNavigate()
 
-        if (fetchedProject?.createdby) {
-          const fetchedCreator = await getUserbyId(fetchedProject.createdby);
-          setCreator(fetchedCreator);
-        }
+    const items = [
+      { title: "Your Projects", path: `/user-projects` },
+      {
+        title: project?.name || "Project",
+        path: `/user-projects/project/${projectId}`,
+      },
+      
+    ].map((item, index) => (
+      <Anchor
+        onClick={(e) => {
+          e.preventDefault(); // Prevent default anchor behavior
+          navigate(item.path); // Navigate programmatically
+        }}
+        key={index}
+        component="button" // Mantine will style it as an anchor but it's a button
+      >
+        {item.title}
+      </Anchor>
+    ));
 
-        setLoading(false); // Set loading to false only once both are fetched
-      } catch (error) {
-        console.error("Error fetching project or creator: ", error);
-        setLoading(false);
-      }
-    };
+  if (loading) {
+    return <div>Loading...</div>;
+  }
 
-    if (projectId) {
-      fetchProjectAndCreator();
-    }
-  }, [projectId]);
-
-  const [tasks, setTasks] = useState(null);
-  useEffect(() => {
-    const fetchTasks = async () => {
-      try {
-        const fetchedTasks = await getTasksByProjectId(projectId);
-        setTasks(fetchedTasks);
-      } catch (error) {
-        console.error("Error fetching tasks:", error);
-        setTasks([]); // Set to an empty array on error
-      }
-    };
-
-    fetchTasks();
-  }, [projectId]);
-
-  useEffect(() => {
-    const fetchProjectAdmins = async () => {
-      try {
-        const fetchedAdmins = await getProjectAdmins(projectId);
-        setAdmins(fetchedAdmins);
-
-      } catch (error) {
-        console.error("Error fetching project admins: ", error);
-      }
-    };
-
-    fetchProjectAdmins();
-  }, [projectId]);
-
-
+  if (error) {
+    return <div>Error: {error}</div>;
+  }
 
   const iconStyle = { width: rem(14), height: rem(14) };
 
@@ -95,12 +61,19 @@ const ProjectPage = () => {
     return { from: "gray.4", to: "gray.6", deg: 90 }; // Default gradient for undefined status
   }
 
-  if (loading) {
-    return <div>Loading...</div>;
-  }
-
   return (
-    <Box mt={20}>
+    <Box mt={20} pl="md">
+      <Breadcrumbs
+          styles={{
+            breadcrumb: {
+              color: "#e8590c",
+              fontWeight: 600,
+            },
+          }}
+          mb={20}
+        >
+          {items}
+        </Breadcrumbs>
       <Flex align={"center"} gap={15}>
         <Title size="h1" c={"dark.6"} ff={"poppins"} fw={600} lts={-2}>
           {project.name}
@@ -138,19 +111,30 @@ const ProjectPage = () => {
         </Tabs.List>
 
         <Tabs.Panel value="description">
-          <ProjectPageProgressBar tasks={tasks} />
-          <ProjectPageDescription project={project} admins={admins} creator={creator} />
-
-          <ProjectPageTasks tasks={tasks} admins={admins} projectId={projectId} />
+          <ProjectPageProgressBar />
+          <ProjectPageDescription />
+          <ProjectPageTasks
+          />
         </Tabs.Panel>
 
         <Tabs.Panel value="messages">Messages tab content</Tabs.Panel>
         <Tabs.Panel value="members">
-          <ProjectPageMembers admins={admins} projectId={projectId}/>
+          <ProjectPageMembers
+            admins={admins}
+            members={members} // Pass members data here
+            projectId={project.id}
+          />
         </Tabs.Panel>
       </Tabs>
     </Box>
   );
 };
+
+// Wrap with ProjectProvider
+const ProjectPage = () => (
+  <ProjectProvider>
+    <ProjectPageContent />
+  </ProjectProvider>
+);
 
 export default ProjectPage;

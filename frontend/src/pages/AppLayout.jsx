@@ -7,9 +7,15 @@ import UserProjects from './UserProjects';
 import ProjectPage from './ProjectPage';
 import CreateNewProject from './CreateNewProject';
 import TaskPage from './TaskPage';
+import { useContext } from 'react';
+import { ProjectContext, ProjectProvider } from '../contexts/ProjectContext';
+import { TaskProvider } from '../contexts/TaskContext';
+import AddNewTaskPage from './AddNewTaskPage';
 
 const AppLayout = () => {
   const [opened, { toggle }] = useDisclosure();
+
+  const {admins} = useContext(ProjectContext)
   
 
   return (
@@ -43,7 +49,8 @@ const AppLayout = () => {
             <Route path="/user-projects" element={<UserProjects/>} />
             <Route path='user-projects/project/:projectId' element={<ProjectPage/>} />
             <Route path='projects/create' element={<CreateNewProject/>} />
-            <Route path='/user-projects/:projectId/task/:taskId' element={<TaskPage/>} />
+            <Route path='/user-projects/:projectId/task/:taskId' element={<TaskProvider><TaskPage/></TaskProvider>} />
+            <Route path='//user-projects/project/:projectId/new-task' element={<ProjectProvider><AddNewTaskPage/></ProjectProvider>} />
           </Routes>
         </AppShell.Main>
       </AppShell>
