@@ -40,8 +40,8 @@ const AppLayout = () => {
             </Title>
           </Group>
         </AppShell.Header>
-        <AppShell.Navbar withBorder={true} py="md" bg="gray.0">
-          <Navbar />
+        <AppShell.Navbar  withBorder={true} py="md" bg="gray.0">
+          <Navbar onLinkClick={toggle} />
         </AppShell.Navbar>
         <AppShell.Main bg="gray.0">
           <Routes>

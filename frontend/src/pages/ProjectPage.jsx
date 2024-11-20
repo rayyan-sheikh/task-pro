@@ -11,6 +11,7 @@ import ProjectPageProgressBar from "../components/ProjectPageProgressBar";
 import ProjectPageMembers from "../components/ProjectPageMembers";
 import { ProjectContext, ProjectProvider } from "../contexts/ProjectContext";
 import { useNavigate } from "react-router-dom";
+import Chat from "../components/Chat";
 
 const ProjectPageContent = () => {
   const { project, tasks, admins, creator, members, loading, error, projectId } =
@@ -37,6 +38,12 @@ const ProjectPageContent = () => {
         {item.title}
       </Anchor>
     ));
+    function formatDate(isoDate) {
+      const date = new Date(isoDate);
+      const day = date.getUTCDate();
+      const month = date.toLocaleString('default', { month: 'long' });
+      return `${day} ${month}`;
+    }
 
   if (loading) {
     return <div>Loading...</div>;
@@ -62,7 +69,7 @@ const ProjectPageContent = () => {
   }
 
   return (
-    <Box mt={20} pl="md">
+    <Box mt={20} >
       <Breadcrumbs
           styles={{
             breadcrumb: {
@@ -88,6 +95,9 @@ const ProjectPageContent = () => {
           {project.status}
         </Badge>
       </Flex>
+      <Badge mt={10} variant="dot" color="orange.8" style={{ color: '#e8590c' }} size="lg">
+            Deadline: {formatDate(project.deadline)}
+          </Badge>
       <Tabs color="orange" defaultValue="description" mt={10}>
         <Tabs.List>
           <Tabs.Tab
@@ -117,12 +127,11 @@ const ProjectPageContent = () => {
           />
         </Tabs.Panel>
 
-        <Tabs.Panel value="messages">Messages tab content</Tabs.Panel>
+        <Tabs.Panel value="messages">
+          <Chat/>
+        </Tabs.Panel>
         <Tabs.Panel value="members">
           <ProjectPageMembers
-            admins={admins}
-            members={members} // Pass members data here
-            projectId={project.id}
           />
         </Tabs.Panel>
       </Tabs>

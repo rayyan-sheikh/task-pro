@@ -51,7 +51,7 @@ const ProjectPageProgressBar = () => {
   };
 
   return (
-    <Box shadow="xl" radius="md" bg="gray.0" m={20} p={15} flex={1}>
+    <Box shadow="xl" radius="md" bg="gray.0" p={15} flex={1}>
       <Title ff="poppins" c="dark.4" fz={25} fw={600} lts={-1} lh={2}>
         Status
       </Title>

@@ -19,7 +19,7 @@ const ProjectPageDescription = () => {
 
   return (
     <Flex flex={1} >
-      <Box flex={1}  shadow="xl" radius="md" bg="gray.2" m={20} p={15}>
+      <Box flex={1}  shadow="xl" radius="md" m={20} >
         <Flex align="center" gap={10}>
           <Title ff="poppins" c="dark.4" fz={25} fw={600} lts={-1} lh={2}>
             Description
@@ -42,9 +42,6 @@ const ProjectPageDescription = () => {
             Created by {creator.name}, {createdAt} ago
           </Text>
         </Flex>
-        <Badge mt={20} variant="dot" color="orange.8" style={{ color: '#e8590c' }} size="lg">
-            Deadline: {formatDate(project.deadline)}
-          </Badge>
       </Box>
     </Flex>
   );

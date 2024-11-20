@@ -2,6 +2,7 @@
 const express = require('express');
 const cors = require('cors');
 const bodyParser = require('body-parser');
+const cookieParser = require('cookie-parser');
 require("dotenv").config();
 
 // Import models
@@ -23,9 +24,15 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 
 // Middleware
-app.use(cors());
+app.use(
+    cors({
+      origin: "http://localhost:5173", // Replace with your frontend's origin
+      credentials: true, // Allow cookies and other credentials
+    })
+  );
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use(cookieParser());
 
 // Route for the home page
 app.get('/', (req, res) => {
@@ -52,8 +59,11 @@ const initializeTables = async () => {
 };
 
 // Initialize tables and start the server
+// Initialize tables and start the server
 initializeTables().then(() => {
-    app.listen(PORT, () => {
+    app.listen(PORT, '0.0.0.0', () => { // '0.0.0.0' binds the server to all network interfaces
         console.log(`Server is running on http://localhost:${PORT}`);
+        console.log(`Accessible on your network at http://192.168.1.25:${PORT}`);
     });
 });
+

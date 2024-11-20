@@ -67,7 +67,7 @@ const ProjectPageMembers = () => {
   
 
   return (
-    <Box p={20}>
+    <Box py={20}>
       <Text ff={"poppins"} c={"dark.4"} fz={25} fw={600} lts={-1} lh={2}>
         Project Members
       </Text>

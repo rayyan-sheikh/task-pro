@@ -1,15 +1,48 @@
-
-.input:focus, .CreateNewProjectDescriptionInput:focus, .CreateNewProjectNameInput:focus{
-    border: 2px solid #ff8c00;
+.input:focus,
+.CreateNewProjectDescriptionInput:focus,
+.CreateNewProjectNameInput:focus {
+  border: 2px solid #ff8c00;
 }
 
-
-.CreateNewProjectDescriptionInput{
-    height: 15rem;
-    
-    
+.CreateNewProjectDescriptionInput {
+  height: 13.9rem;
+}
+.CreateNewProjectDescriptionInputError {
+  height: 13.9rem;
 }
 
-.wrapper:focus{
-    border: 2px solid #ff8c00;
+.inputTask {
+  height: 4rem;
+  font-size: 1.5rem;
+  font-family: "Poppins";
+  color: #464646;
+  font-weight: 600;
+  border-bottom: 3px solid #464646;
+  border-top: none;
+  border-right: none;
+  border-left: 3px solid #464646;
+}
+.inputTaskError {
+  height: 4rem;
+  font-size: 1.5rem;
+  font-family: "Poppins";
+  font-weight: 500;
+  border-bottom: 3px solid #ae0000;
+  border-top: none;
+  border-right: none;
+  border-left: none;
+}
+.inputTask::placeholder {
+  font-family: "Poppins";
+}
+.inputTask:focus {
+  border: 4px solid #ff8c00;
+  border-top: none;
+  border-right: none;
+  border-left: 4px solid #ff8c00;
+  color: #ff8c00;
+}
+
+.wrapper:focus {
+  border: 2px solid #ff8c00;
 }

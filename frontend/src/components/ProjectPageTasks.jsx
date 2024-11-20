@@ -40,8 +40,8 @@ const ProjectPageTasks = () => {
 
   const navigate = useNavigate();
   //const loggedInUser = "fea52074-7cf8-4f6e-b1f9-e69b6b8dacdc";
-  // const loggedInUser = "459fb193-bdc9-4526-a98c-753c88dbbc00";
-  const loggedInUser = "31b559bc-1197-4428-b76b-bc968e57b16e";
+  const loggedInUser = "459fb193-bdc9-4526-a98c-753c88dbbc00";
+  // const loggedInUser = "31b559bc-1197-4428-b76b-bc968e57b16e";
 
   // Format date function
   function formatDate(isoDate) {
@@ -93,7 +93,7 @@ const ProjectPageTasks = () => {
   };
 
   return (
-    <Box shadow="xl" radius="md" bg={"gray.0"} mx={30} p={20}>
+    <Box shadow="xl" radius="md" bg={"gray.0"}  p={20}>
       <Title ff={"poppins"} c={"dark.4"} fz={25} fw={600} lts={-1} lh={2}>
         Tasks
       </Title>
@@ -187,28 +187,30 @@ const ProjectPageTasks = () => {
           <Box mih={260}>
             {isUserAdmin(loggedInUser) && (
               <Paper
-                style={{
-                  cursor: "pointer",
-                  backgroundColor: "#e8590c",
-                  width: 331.6,
-                  height: 122.05,
-                  transition: "all 0.1s ease",
-                }}
-                shadow="sm"
-                radius="md"
-                withBorder
-                pb={10}
-                px={15}
-                ta={"start"}
-                w={331.6}
-                h={122.05}
-                onClick={()=> {navigate(`/user-projects/project/${projectId}/new-task`)}}
-                onMouseEnter={(e) =>
-                  (e.currentTarget.style.backgroundColor = "#f76707")
-                }
-                onMouseLeave={(e) =>
-                  (e.currentTarget.style.backgroundColor = "#e8590c")
-                }
+              style={{
+                cursor: "pointer",
+                backgroundColor: "#e8590c",
+                width: 331.6,
+                height: 122.05,
+                transition: "all 0.1s ease",
+              }}
+              shadow="sm"
+              radius="md"
+              withBorder
+              pb={10}
+              px={15}
+              ta={"start"}
+              w={331.6}
+              h={122.05}
+              onClick={() => {
+                navigate(`/user-projects/project/${projectId}/new-task`);
+              }}
+              onMouseEnter={(e) =>
+                (e.currentTarget.style.backgroundColor = "#f76707")
+              }
+              onMouseLeave={(e) =>
+                (e.currentTarget.style.backgroundColor = "#e8590c")
+              }
               >
                 <Flex
                   align={"center"}
@@ -224,7 +226,15 @@ const ProjectPageTasks = () => {
                 </Flex>
               </Paper>
             )}
-            <Title ff={"poppins"} c={"dark.4"} fz={20} mt={20} fw={600} lts={-1} lh={2}>
+            <Title
+              ff={"poppins"}
+              c={"dark.4"}
+              fz={20}
+              mt={20}
+              fw={600}
+              lts={-1}
+              lh={2}
+            >
               No tasks found.
             </Title>
           </Box>
@@ -254,7 +264,9 @@ const ProjectPageTasks = () => {
                 ta={"start"}
                 w={331.6}
                 h={122.05}
-                onClick={()=> {navigate(`/user-projects/project/${projectId}/new-task`)}}
+                onClick={() => {
+                  navigate(`/user-projects/project/${projectId}/new-task`);
+                }}
                 onMouseEnter={(e) =>
                   (e.currentTarget.style.backgroundColor = "#f76707")
                 }
@@ -303,6 +315,12 @@ const ProjectPageTasks = () => {
                     fw={600}
                     lts={-1}
                     lh={2}
+                    style={{
+                      overflow: "hidden",
+                      textOverflow: "ellipsis",
+                      whiteSpace: "nowrap",
+                      maxWidth: "190px",
+                    }}
                   >
                     {task.task_name}
                   </Title>
@@ -326,19 +344,34 @@ const ProjectPageTasks = () => {
                   {task.task_description}
                 </Text>
                 <Flex
-                  justify="flex-start"
+                  justify="space-between"
                   align="center"
                   direction="row"
                   gap={9}
                 >
+                  <Flex gap={5}>
                   <Avatar
                     size={18}
                     src={task.assigned_user_profile_pic}
                     alt={task.assigned_user_name}
                   />
-                  <Text ff={"poppins"} fz={15} fw={500} c={"dark.4"}>
-                    {task.assigned_user_name}
+                  <Text
+                    ff={"poppins"}
+                    fz={15}
+                    fw={500}
+                    c={"dark.4"}
+                    style={{
+                      overflow: "hidden",
+                      textOverflow: "ellipsis",
+                      whiteSpace: "nowrap",
+                      maxWidth: "88px",
+                    }}
+                  >
+                     {`${task.assigned_user_name.split(' ')[0]} ${
+    task.assigned_user_name.split(' ')[1]?.charAt(0) || ''
+  }.`}
                   </Text>
+                  </Flex>
                   <Badge
                     variant="dot"
                     color="orange.8"

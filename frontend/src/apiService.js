@@ -151,3 +151,13 @@ export const markTaskCompleted = async (taskId, status) => {
     throw error;
     }
   }
+
+  export const deleteTask = async (taskId) =>{
+    try {
+      const response = await axiosInstance.delete(`/api/tasks/${taskId}`)
+      return response.data;
+    } catch (error) {
+      console.error("Error deleting task: ", error)
+      throw error
+    }
+  }
