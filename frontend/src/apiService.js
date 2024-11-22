@@ -161,3 +161,34 @@ export const markTaskCompleted = async (taskId, status) => {
       throw error
     }
   }
+
+
+  export const loginUser = async (email, password) => {
+    try {
+      const response = await axiosInstance.post('/auth/login', { email, password });
+      console.log(response.data)
+      return response.data;
+      
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  export const logoutUser = async () => {
+    try {
+      const response = await axiosInstance.post('/auth/logout');
+      return response.data;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  // Example protected route
+  export const getProtectedData = async () => {
+    try {
+      const response = await axiosInstance.get('/protected-route');
+      return response.data;
+    } catch (error) {
+      throw error;
+    }
+  }

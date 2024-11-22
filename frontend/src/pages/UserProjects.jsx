@@ -27,6 +27,7 @@ import classes from "../Input.module.css";
 import { getProjectsByUserId } from "../apiService";
 import { useNavigate } from "react-router-dom";
 import utils from "../utils/utils";
+import { useAuth } from "../contexts/AuthContext";
 
 const UserProjects = () => {
   const icon = <IoMdSearch />;
@@ -40,7 +41,8 @@ const UserProjects = () => {
   const [error, setError] = useState(null);
   const [searchTerm, setSearchTerm] = useState(""); // For search input
   const [sortOrder, setSortOrder] = useState("latest"); // For sort order
-  const userId = "31b559bc-1197-4428-b76b-bc968e57b16e";
+  const {user} = useAuth()
+  const userId = user.id;
 
   const navigate = useNavigate();
 
@@ -97,7 +99,8 @@ const UserProjects = () => {
           navigate(item.path); // Navigate programmatically
         }}
         key={index}
-        component="button" // Mantine will style it as an anchor but it's a button
+        component="button" 
+        lh={1.5}
       >
         {item.title}
       </Anchor>
@@ -105,7 +108,7 @@ const UserProjects = () => {
   );
 
   return (
-    <Box mt={20} pl={"md"}>
+    <Box mt={20} px={"md"}>
       <Breadcrumbs
         styles={{
           breadcrumb: {

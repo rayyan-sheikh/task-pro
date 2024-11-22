@@ -26,14 +26,16 @@ import { DateTimePicker } from "@mantine/dates";
 import { createProject, addProjectMembers, getAllUsers } from "../apiService";
 import { useNavigate } from "react-router-dom";
 import {IconPlus} from '@tabler/icons-react'
+import {useAuth} from '../contexts/AuthContext'
 
 const CreateNewProject = () => {
   const [activeStep, setActiveStep] = useState(0);
   const [projectId, setProjectId] = useState(null);
   const [allUsers, setAllUsers] = useState([]);
+  const {user} = useAuth()
 
   const navigate = useNavigate();
-  const loggedInUser = '31b559bc-1197-4428-b76b-bc968e57b16e'
+  const loggedInUser = user.id
 
   useEffect(() => {
     const fetchData = async () => {

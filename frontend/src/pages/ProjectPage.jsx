@@ -1,5 +1,5 @@
 import React, { useContext } from "react";
-import { Anchor, Badge, Box, Breadcrumbs, Flex, Tabs, Title, rem } from "@mantine/core";
+import { Anchor, Badge, Box, Breadcrumbs, Flex, LoadingOverlay, Tabs, Title, rem } from "@mantine/core";
 import {
   IconMessageCircle,
   IconUsersGroup,
@@ -33,7 +33,8 @@ const ProjectPageContent = () => {
           navigate(item.path); // Navigate programmatically
         }}
         key={index}
-        component="button" // Mantine will style it as an anchor but it's a button
+        component="button"
+        lh={1.5}
       >
         {item.title}
       </Anchor>
@@ -46,7 +47,7 @@ const ProjectPageContent = () => {
     }
 
   if (loading) {
-    return <div>Loading...</div>;
+    return <LoadingOverlay visible={true} zIndex={1000} overlayProps={{ radius: 'sm', blur: 2 }} loaderProps={{ color: 'orange', type: 'bars' }} />
   }
 
   if (error) {
@@ -69,7 +70,7 @@ const ProjectPageContent = () => {
   }
 
   return (
-    <Box mt={20} >
+    <Box mt={20} px={"md"} w={"100%"}>
       <Breadcrumbs
           styles={{
             breadcrumb: {

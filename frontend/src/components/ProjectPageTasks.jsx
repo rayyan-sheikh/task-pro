@@ -29,9 +29,11 @@ import {
 import { useNavigate } from "react-router-dom";
 import { ProjectContext } from "../contexts/ProjectContext";
 import classes from "../Input.module.css";
+import { useAuth } from "../contexts/AuthContext";
 
 const ProjectPageTasks = () => {
   const { tasks, projectId, admins } = useContext(ProjectContext);
+  const {user} = useAuth()
 
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
@@ -40,7 +42,7 @@ const ProjectPageTasks = () => {
 
   const navigate = useNavigate();
   //const loggedInUser = "fea52074-7cf8-4f6e-b1f9-e69b6b8dacdc";
-  const loggedInUser = "459fb193-bdc9-4526-a98c-753c88dbbc00";
+  const loggedInUser = user.id;
   // const loggedInUser = "31b559bc-1197-4428-b76b-bc968e57b16e";
 
   // Format date function
@@ -102,7 +104,7 @@ const ProjectPageTasks = () => {
         {/* Search Input */}
         <TextInput
           classNames={{ input: classes.input }}
-          w={500}
+          w={{base: "331.6", md:"500"}}
           placeholder="Search tasks by name"
           value={search}
           onChange={(e) => setSearch(e.target.value)}
@@ -180,7 +182,7 @@ const ProjectPageTasks = () => {
       </Flex>
 
       {/* Render Tasks */}
-      <Flex>
+      <Flex >
         {filteredTasks === null ? (
           <p>Loading tasks...</p>
         ) : filteredTasks.length === 0 ? (
@@ -190,6 +192,7 @@ const ProjectPageTasks = () => {
               style={{
                 cursor: "pointer",
                 backgroundColor: "#e8590c",
+                maxWidth: "100%",
                 width: 331.6,
                 height: 122.05,
                 transition: "all 0.1s ease",
@@ -252,8 +255,6 @@ const ProjectPageTasks = () => {
                 style={{
                   cursor: "pointer",
                   backgroundColor: "#e8590c",
-                  width: 331.6,
-                  height: 122.05,
                   transition: "all 0.1s ease",
                 }}
                 shadow="sm"

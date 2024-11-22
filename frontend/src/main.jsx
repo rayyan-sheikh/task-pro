@@ -6,10 +6,13 @@ import { MantineProvider } from '@mantine/core'
 import { ModalsProvider } from '@mantine/modals';
 import { ProjectProvider } from './contexts/ProjectContext.jsx'
 import { Notifications } from '@mantine/notifications';
+import { AuthProvider } from './contexts/AuthContext.jsx'
 
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
+    <AuthProvider>
+
     <ProjectProvider>
     <MantineProvider>
     <Notifications />
@@ -18,5 +21,6 @@ createRoot(document.getElementById('root')).render(
     </ModalsProvider>
     </MantineProvider>
     </ProjectProvider>
+    </AuthProvider>
   </StrictMode>,
 )

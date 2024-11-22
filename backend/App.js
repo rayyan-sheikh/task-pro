@@ -22,28 +22,34 @@ const projectMemberRoutes = require('./routes/projectMemberRoutes');
 // Initialize the Express application
 const app = express();
 const PORT = process.env.PORT || 5000;
+app.use(cookieParser());
 
 // Middleware
 app.use(
     cors({
-      origin: "http://localhost:5173", // Replace with your frontend's origin
+        origin: ['http://localhost:5173', 'http://192.168.1.10:5173'], // Replace with your frontend's origin
       credentials: true, // Allow cookies and other credentials
     })
   );
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-app.use(cookieParser());
+
 
 // Route for the home page
 app.get('/', (req, res) => {
     res.send('Welcome to the API!');
 });
 
+const verifyToken = require('./middleware/auth');
+
 // Use the user routes
-app.use('/api', userRoutes);
-app.use('/api', projectRoutes);
-app.use('/api', taskRoutes);
-app.use('/api', projectMemberRoutes);
+app.use('/api', verifyToken, userRoutes);
+app.use('/api', verifyToken, projectRoutes);
+app.use('/api', verifyToken, taskRoutes);
+app.use('/api', verifyToken, projectMemberRoutes);
+
+
+app.use('/auth', require('./routes/auth'));
 
 // Function to create tables
 const initializeTables = async () => {
@@ -58,12 +64,11 @@ const initializeTables = async () => {
     }
 };
 
-// Initialize tables and start the server
-// Initialize tables and start the server
+
 initializeTables().then(() => {
     app.listen(PORT, '0.0.0.0', () => { // '0.0.0.0' binds the server to all network interfaces
         console.log(`Server is running on http://localhost:${PORT}`);
-        console.log(`Accessible on your network at http://192.168.1.25:${PORT}`);
+        console.log(`Accessible on your network at http://192.168.1.10:${PORT}`);
     });
 });
 

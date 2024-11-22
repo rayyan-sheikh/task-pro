@@ -33,17 +33,19 @@ import {
 } from "@tabler/icons-react";
 import { useClickOutside } from "@mantine/hooks";
 import utils from "../utils/utils";
+import { useAuth } from "../contexts/AuthContext";
 
 const AddNewTaskPage = () => {
   const navigate = useNavigate();
   const { projectId } = useParams();
   const { project, admins, members } = useContext(ProjectContext);
   const [isScrollAreaVisible, setScrollAreaVisible] = useState(false);
+  const {user} = useAuth()
 
   const overlayRef = useClickOutside(() => setScrollAreaVisible(false));
 
   // const loggedInUser = "fea52074-7cf8-4f6e-b1f9-e69b6b8dacdc";
-  const loggedInUser = "459fb193-bdc9-4526-a98c-753c88dbbc00";
+  const loggedInUser = user.id
   // const loggedInUser = "31b559bc-1197-4428-b76b-bc968e57b16e";
 
   const isAdmin = (userId) => {
@@ -144,6 +146,7 @@ const AddNewTaskPage = () => {
       }}
       key={index}
       component="button"
+      lh={1.5}
     >
       {item.title}
     </Anchor>
@@ -219,8 +222,8 @@ const AddNewTaskPage = () => {
   };
 
   return (
-    <Box>
-      <Box w={"100%"} mt={20}>
+    <Box  mt={20} px={"md"} w={"100%"}>
+      <Box>
         <Breadcrumbs
           styles={{
             breadcrumb: {
@@ -457,7 +460,7 @@ const AddNewTaskPage = () => {
                               w={380}
                               offsetScrollbars
                               scrollbarSize={6}
-                              
+                              scrollbars="y"
                             >
                               <Flex gap={10} wrap={"wrap"} justify={"center"} w={380}>
                                 {filteredMembers.map((member) => (

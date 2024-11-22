@@ -30,14 +30,16 @@ import {
   IconTrash,
   IconTrendingUp,
 } from "@tabler/icons-react";
+import { useAuth } from "../contexts/AuthContext.jsx";
 
 const TaskPage = () => {
   const { task, admins, loading, error, setTaskData, projectId } =
     useContext(TaskContext);
+    const {user} = useAuth()
 
   const navigate = useNavigate();
   // const loggedInUser = "fea52074-7cf8-4f6e-b1f9-e69b6b8dacdc";
-  const loggedInUser = "459fb193-bdc9-4526-a98c-753c88dbbc00";
+  const loggedInUser = user.id;
 
   // Helper functions
   function badgeColor(status) {
@@ -139,6 +141,7 @@ const TaskPage = () => {
       }}
       key={index}
       component="button" // Mantine will style it as an anchor but it's a button
+      lh={1.5}
     >
       {item.title}
     </Anchor>
@@ -149,8 +152,7 @@ const TaskPage = () => {
   if (!task) return <div>No task data found</div>;
 
   return (
-    <Box>
-      <Box mt={20} w={"100%"}>
+      <Box mt={20} px={"md"} w={"100%"} mb={20}>
         <Breadcrumbs
           styles={{
             breadcrumb: {
@@ -172,7 +174,7 @@ const TaskPage = () => {
               {task[0].project_name}
             </Text>
           </Flex>
-          <Flex align={"center"} mt={5} mr={10}>
+          <Flex align={"center"} mt={5} mr={15}>
             <Badge color={badgeColor(task[0].task_status)}>
               {task[0].task_status}
             </Badge>
@@ -326,7 +328,6 @@ const TaskPage = () => {
           </Button>
         </Flex>
       </Box>
-    </Box>
   );
 };
 
