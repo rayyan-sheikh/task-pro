@@ -152,7 +152,7 @@ const TaskPage = () => {
   if (!task) return <div>No task data found</div>;
 
   return (
-      <Box mt={20} px={"md"} w={"100%"} mb={20}>
+      <Box mt={20} px={"md"} w={"100%"}>
         <Breadcrumbs
           styles={{
             breadcrumb: {
@@ -321,6 +321,7 @@ const TaskPage = () => {
               navigate(`/user-projects/project/${projectId}`);
             }}
             variant="outline"
+            mb={20}
             color="orange.8"
             leftSection={<IconArrowLeft size={14} />}
           >

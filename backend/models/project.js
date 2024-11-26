@@ -5,15 +5,16 @@ const Project = {
   createTable: async () => {
     const query = `
       CREATE TABLE IF NOT EXISTS projects (
-        id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-        name VARCHAR(100) NOT NULL,
-        description TEXT,
-        createdBy UUID REFERENCES users(id) ON DELETE SET NULL,
-        status VARCHAR(50) DEFAULT 'active',
-        deadline DATE,
-        createdAt TIMESTAMP DEFAULT NOW(),
-        updatedAt TIMESTAMP DEFAULT NOW()
-      );
+      id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+      name VARCHAR(100) NOT NULL,
+      description TEXT,
+      createdBy UUID REFERENCES users(id) ON DELETE SET NULL,
+      organizationId UUID REFERENCES organizations(id) ON DELETE CASCADE,
+      status VARCHAR(50) DEFAULT 'active',
+      deadline DATE,
+      createdAt TIMESTAMP DEFAULT NOW(),
+      updatedAt TIMESTAMP DEFAULT NOW()
+    );
     `;
     await pool.query(query);
   },

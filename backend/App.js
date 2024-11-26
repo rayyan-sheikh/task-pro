@@ -27,7 +27,7 @@ app.use(cookieParser());
 // Middleware
 app.use(
     cors({
-        origin: ['http://localhost:5173', 'http://192.168.1.10:5173'], // Replace with your frontend's origin
+        origin: ['http://localhost:5173', 'http://192.168.1.13:5173'], // Replace with your frontend's origin
       credentials: true, // Allow cookies and other credentials
     })
   );
@@ -68,7 +68,7 @@ const initializeTables = async () => {
 initializeTables().then(() => {
     app.listen(PORT, '0.0.0.0', () => { // '0.0.0.0' binds the server to all network interfaces
         console.log(`Server is running on http://localhost:${PORT}`);
-        console.log(`Accessible on your network at http://192.168.1.10:${PORT}`);
+        console.log(`Accessible on your network at http://192.168.1.13:${PORT}`);
     });
 });
 

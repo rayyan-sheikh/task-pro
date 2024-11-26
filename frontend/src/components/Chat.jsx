@@ -7,16 +7,18 @@ import { useAuth } from '../contexts/AuthContext';
 import ChatMessage from './ChatMessage';
 import { useNavigate } from 'react-router-dom';
 import { getUserbyId } from '../apiService';
+import { IconSend } from '@tabler/icons-react';
 
 // Firebase configuration
 const firebaseConfig = {
-  apiKey: "AIzaSyAOSz1_3PCZdciVmkGXiYgFhD1ss_tWx_4",
-  authDomain: "task-pro-pern.firebaseapp.com",
-  projectId: "task-pro-pern",
-  storageBucket: "task-pro-pern.firebasestorage.app",
-  messagingSenderId: "158563051877",
-  appId: "1:158563051877:web:e82fb717896133f67c998c",
+  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
+  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
+  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
+  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
+  appId: import.meta.env.VITE_FIREBASE_APP_ID,
 };
+
 
 // Initialize Firebase app
 const app = initializeApp(firebaseConfig);
@@ -130,12 +132,12 @@ const Chat = () => {
       </ScrollArea>
       <form
         onSubmit={sendMessage}
-        style={{ display: 'flex', gap: '10px', padding: '10px' }}
+        style={{ display: 'flex'}}
       >
         <input
           value={formValue}
           onChange={(e) => setFormValue(e.target.value)}
-          placeholder="Say something nice..."
+          placeholder="Send a message..."
           style={{
             width: '100%',
             padding: '8px',
@@ -147,10 +149,10 @@ const Chat = () => {
         <Button
           type="submit"
           disabled={!formValue}
+          c={'gray.2'}
+          h={45}
+          bg={formValue? 'orange.8': 'gray.2'}
           sx={{
-            backgroundColor: '#2f80ed',
-            color: 'white',
-            height: '100%',
             padding: '8px 12px',
             borderRadius: '5px',
             fontSize: '18px',
@@ -158,7 +160,7 @@ const Chat = () => {
             border: 'none',
           }}
         >
-          🕊️
+          <IconSend/>
         </Button>
       </form>
     </Flex>

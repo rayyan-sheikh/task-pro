@@ -1,5 +1,6 @@
 const Task = require('../models/task');
 const { getTasksByProjectId } = require('../queries/getTasksByProjectId');
+const { getTasksByUserId } = require('../queries/getTasksByUserId');
 const getTaskInfo = require('../queries/getTaskUsers');
 const UserPendingTasksQueries = require('../queries/userInProgressTasksQueries');
 
@@ -33,6 +34,17 @@ const taskController = {
     } catch (error) {
       console.error(error);
       res.status(500).json({ message: 'Error retrieving task' });
+    }
+  },
+
+  getTasksByUserId: async (req, res)=> {
+    try {
+      const { userId} = req.params;
+      const tasks = await getTasksByUserId(userId);
+      res.status(200).json(tasks);
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({message: 'Error fetchin tasks for this user'})
     }
   },
 

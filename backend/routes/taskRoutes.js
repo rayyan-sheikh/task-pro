@@ -11,6 +11,7 @@ router.delete('/tasks/:id', taskController.deleteTask);
 router.get('/tasks/users/:id/in-progress-tasks', taskController.getInProgressTasksForUser);
 router.put('/tasks/:taskId/:status', taskController.changeTaskStatus);
 router.get('/tasks/project/:projectId', taskController.getTasksByProjectId);
+router.get('/tasks/all/:userId', taskController.getTasksByUserId);
 
 
 

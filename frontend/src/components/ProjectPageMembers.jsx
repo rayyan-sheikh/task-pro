@@ -14,24 +14,42 @@ import {
   Menu,
   Button,
   TextInput,
+  rem,
+  Tooltip,
 } from "@mantine/core";
-import { IconArrowsMoveVertical, IconUserDown } from "@tabler/icons-react";
+import {
+  IconArrowsMoveVertical,
+  IconCircleCheck,
+  IconDotsVertical,
+  IconTrash,
+  IconTrendingDown,
+  IconTrendingUp,
+  IconUserDown,
+} from "@tabler/icons-react";
 import { RiSortAlphabetAsc } from "react-icons/ri";
 import classes from "../Input.module.css";
 import { ProjectContext } from "../contexts/ProjectContext";
+import { useAuth } from "../contexts/AuthContext";
 
 const ProjectPageMembers = () => {
+  const { projectId, members, creator } = useContext(ProjectContext);
+  const { user } = useAuth();
 
-  const { projectId, members } = useContext(ProjectContext)
+  const loggedInUser = user.id;
 
   const [filteredMembers, setFilteredMembers] = useState([]);
   const [search, setSearch] = useState("");
   const [sortBy, setSortBy] = useState("name");
   const [showAdmins, setShowAdmins] = useState(false);
 
+  function adminCheck(userId, members) {
+    const user = members.find((member) => member.user_id === userId);
+    return user ? user.user_role === "admin" : false;
+  }
+  const isUserAdmin = adminCheck(user.id, members);
+  const isUserCreator = creator.id === user.id;
 
   useEffect(() => {
-    
     let filteredList = [...members];
 
     // Apply search
@@ -43,14 +61,12 @@ const ProjectPageMembers = () => {
       );
     }
 
-
     if (showAdmins) {
       filteredList = filteredList.filter(
         (member) => member.user_role === "admin"
       );
     }
 
-    
     if (sortBy === "name") {
       filteredList = filteredList.sort((a, b) =>
         a.user_name.localeCompare(b.user_name)
@@ -63,8 +79,6 @@ const ProjectPageMembers = () => {
 
     setFilteredMembers(filteredList);
   }, [search, sortBy, showAdmins, members]);
-
-  
 
   return (
     <Box py={20}>
@@ -154,11 +168,112 @@ const ProjectPageMembers = () => {
                     </Text>
                   </Flex>
                 </Flex>
-                {member.user_role === "admin" && (
-                  <Badge variant="outline" color="orange">
-                    Admin
-                  </Badge>
-                )}
+                <Flex>
+                  {member.user_role === "admin" && (
+                    <Badge variant="outline" color="orange">
+                      Admin
+                    </Badge>
+                  )}
+                  {isUserCreator &&
+  member.user_id !== creator.id &&
+  member.user_id !== user.id ? (
+    <Menu>
+      <Menu.Target>
+        <Tooltip label="Options" withArrow position="top">
+          <IconDotsVertical
+            color="#424242"
+            size={20}
+            style={{ cursor: "pointer" }}
+          />
+        </Tooltip>
+      </Menu.Target>
+      <Menu.Dropdown>
+        {/* Creator's Options */}
+        {member.user_role !== "admin" && (
+          <Menu.Item
+            color="#2f9e44"
+            ff={"poppins"}
+            fw={500}
+            onClick={() =>
+              console.log(`Promote ${member.user_name} to Admin`)
+            }
+            leftSection={<IconCircleCheck size={16} />}
+          >
+            Promote to Admin
+          </Menu.Item>
+        )}
+        {member.user_role === "admin" && (
+          <Menu.Item
+            color="red"
+            ff={"poppins"}
+            fw={500}
+            onClick={() =>
+              console.log(`Demote ${member.user_name} to Normal`)
+            }
+            leftSection={<IconTrendingDown size={16} />}
+          >
+            Demote Admin
+          </Menu.Item>
+        )}
+        <Menu.Item
+          color="red"
+          ff={"poppins"}
+          fw={500}
+          onClick={() =>
+            console.log(`Remove ${member.user_name}`)
+          }
+          leftSection={<IconTrash size={16} />}
+        >
+          Remove User
+        </Menu.Item>
+      </Menu.Dropdown>
+    </Menu>
+  ) : <Box w={20}></Box>}
+
+{/* Admin's Options */}
+{!isUserCreator &&
+  isUserAdmin &&
+  member.user_role === "member" &&
+  member.user_id !== creator.id &&
+  member.user_id !== user.id ? (
+    <Menu>
+      <Menu.Target>
+        <Tooltip label="Options" withArrow position="top">
+          <IconDotsVertical
+            color="#424242"
+            size={20}
+            style={{ cursor: "pointer" }}
+          />
+        </Tooltip>
+      </Menu.Target>
+      <Menu.Dropdown>
+        <Menu.Item
+          color="#2f9e44"
+          ff={"poppins"}
+          fw={500}
+          onClick={() =>
+            console.log(`Promote ${member.user_name} to Admin`)
+          }
+          leftSection={<IconCircleCheck size={16} />}
+        >
+          Promote to Admin
+        </Menu.Item>
+        <Menu.Item
+          color="red"
+          ff={"poppins"}
+          fw={500}
+          onClick={() =>
+            console.log(`Remove ${member.user_name}`)
+          }
+          leftSection={<IconTrash size={16} />}
+        >
+          Remove User
+        </Menu.Item>
+      </Menu.Dropdown>
+    </Menu>
+  ) : null}
+
+                </Flex>
               </Flex>
             </Paper>
           ))}

@@ -118,6 +118,16 @@ export const markTaskCompleted = async (taskId, status) => {
       throw error;
     }
   }
+
+  export const getTasksByUserId = async (userId) => {
+    try {
+      const response = await axiosInstance.get(`/api/tasks/all/${userId}`);
+        return response.data;
+    } catch (error) {
+      console.error('Error getting tasks', error)
+      throw error;
+    }
+  }
  
 
   export const getTaskUsers = async(taskId, projectId)=>{
@@ -192,3 +202,4 @@ export const markTaskCompleted = async (taskId, status) => {
       throw error;
     }
   }
+

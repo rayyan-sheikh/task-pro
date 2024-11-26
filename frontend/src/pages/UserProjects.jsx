@@ -183,10 +183,9 @@ const UserProjects = () => {
                 <Card
                   key={project.projectid}
                   shadow="sm"
-                  padding="lg"
                   radius="md"
                   withBorder
-                  w={190}
+                  w={165}
                   onClick={() =>
                     navigate(`/user-projects/project/${project.projectid}`)
                   }
@@ -200,15 +199,15 @@ const UserProjects = () => {
                     />
                   </Card.Section>
 
-                  <Group justify="space-between" mt="md" mb={0}>
-                    <Text fz={17} lineClamp={1} c={"dark.6"} fw={500}>
+                  <Flex h={'100%'} direction={'column'} align={'start'} justify={"space-between"} mt="md" mb={0}>
+                    <Text fz={16} lineClamp={2} lh={1.3} c={"dark.6"} fw={500}>
                       {project.projectname}
                     </Text>
                     <Flex align={"center"} gap={2} c="dark.2" fw={500} fz={11}>
                       {latestIcon} Updated{" "}
                       {utils.timeConverter(project.updatedat)} ago
                     </Flex>
-                  </Group>
+                  </Flex>
                 </Card>
               ))}
             </Flex>

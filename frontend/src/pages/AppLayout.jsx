@@ -14,6 +14,7 @@ import { TaskProvider } from '../contexts/TaskContext';
 import { useAuth } from '../contexts/AuthContext';
 import axiosInstance from '../axiosInstance';
 import { getUserbyId } from '../apiService';
+import UserTasksPage from './UserTasksPage';
 
 const AppLayout = () => {
   const [opened, { toggle }] = useDisclosure();
@@ -95,6 +96,7 @@ const AppLayout = () => {
           <Route path="/user-projects" element={<UserProjects />} />
           <Route path="user-projects/project/:projectId" element={<ProjectPage />} />
           <Route path="projects/create" element={<CreateNewProject />} />
+          <Route path="/tasks/all/:userId" element={<UserTasksPage/>}/>
           <Route path="/user-projects/:projectId/task/:taskId" element={<TaskProvider><TaskPage /></TaskProvider>} />
           <Route path="//user-projects/project/:projectId/new-task" element={<ProjectProvider><AddNewTaskPage /></ProjectProvider>} />
         </Routes>

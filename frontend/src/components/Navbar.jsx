@@ -19,6 +19,7 @@ import { IconLogout2 } from "@tabler/icons-react";
 
 const Navbar = ({ onLinkClick, user }) => {
   const { logout, isLoading } = useAuth();
+  const loggedInUserId = user.id;
   const navigate = useNavigate();
   const [visible, { toggle }] = useDisclosure(true);
 
@@ -93,7 +94,7 @@ const Navbar = ({ onLinkClick, user }) => {
         </NavLink>
         <NavLink
           component={RouterNavLink}
-          to="/tasks"
+          to={`/tasks/all/${loggedInUserId}`}
           label="Tasks"
           color="orange.8"
           variant="filled"

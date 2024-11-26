@@ -6,15 +6,16 @@ const User = {
   createTable: async () => {
     const query = `
       CREATE TABLE IF NOT EXISTS users (
-        id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-        name VARCHAR(100) NOT NULL,
-        password VARCHAR(255) NOT NULL,
-        profilePicUrl TEXT,
-        email VARCHAR(255) UNIQUE NOT NULL,
-        gender VARCHAR(10),
-        createdAt TIMESTAMP DEFAULT NOW(),
-        updatedAt TIMESTAMP DEFAULT NOW()
-      );
+      id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+      name VARCHAR(100) NOT NULL,
+      password VARCHAR(255) NOT NULL,
+      profilePicUrl TEXT,
+      email VARCHAR(255) UNIQUE NOT NULL,
+      gender VARCHAR(10),
+      organizationId UUID REFERENCES organizations(id) ON DELETE SET NULL,
+      createdAt TIMESTAMP DEFAULT NOW(),
+      updatedAt TIMESTAMP DEFAULT NOW()
+    );
     `;
     await pool.query(query);
   },
