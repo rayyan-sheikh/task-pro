@@ -13,6 +13,17 @@ const utils = {
         return `${days} day${days !== 1 ? 's' : ''}`;
     },
 
+    dateMantineToPostgre: (inputDate) => {
+      const date = new Date(inputDate);
+      const localISO = new Date(date.getTime() - date.getTimezoneOffset() * 60000).toISOString();
+      return localISO;
+  },
+
+  datePostgreToMantine: (inputDate) => {
+      const date = new Date(inputDate);
+      return new Date(date.getTime() + date.getTimezoneOffset() * 60000).toString();
+  },
+
      generateRandomTaskDescription: () => {
         const words = [
             "Optimize", "improve", "code", "design", "implement", "develop", "framework", 

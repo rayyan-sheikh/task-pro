@@ -68,10 +68,45 @@ const Task = {
   deleteTask: async (id) => {
     const query = `DELETE FROM tasks WHERE id = $1;`;
     await pool.query(query, [id]);
-  }
+  },
+
+  changeTaskName: async (taskId, name) => {
+    const query = `
+      UPDATE tasks
+      SET name = $1, updatedAt = NOW()
+      WHERE id = $2
+      RETURNING *;
+    `;
+    const values = [name, taskId];
+    const result = await pool.query(query, values);
+    return result.rows[0];
+  },
+
+  changeTaskDescription: async (taskId, description) => {
+    const query = `
+      UPDATE tasks
+      SET description = $1, updatedAt = NOW()
+      WHERE id = $2
+      RETURNING *;
+    `;
+    const values = [description, taskId];
+    const result = await pool.query(query, values);
+    return result.rows[0];
+  },
+
+  changeTaskDeadline: async (taskId, deadline) => {
+    const query = `
+      UPDATE tasks
+      SET deadline = $1, updatedAt = NOW()
+      WHERE id = $2
+      RETURNING *;
+    `;
+    const values = [deadline, taskId];
+    const result = await pool.query(query, values);
+    return result.rows[0];
+  },
 
 
-  // Add other necessary methods for the Task model
 };
 
 module.exports = Task;

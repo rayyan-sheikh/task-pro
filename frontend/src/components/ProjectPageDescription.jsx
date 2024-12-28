@@ -30,10 +30,14 @@ const ProjectPageDescription = () => {
         <Text c={"dark.6"}
           ff={"poppins"}
           fz={16}
-          py={10}
-          mb={20}
+          pb={15}
           fw={500}
-          style={{ whiteSpace: "pre-wrap" }}>
+          maw={"100%"}
+          style={{
+            whiteSpace: "pre-wrap",
+            wordWrap: "break-word", // Ensures long words wrap
+            overflowWrap: "break-word",
+          }}>
           {project.description}
         </Text>
         <Flex align="center" gap={7} mt={10}>

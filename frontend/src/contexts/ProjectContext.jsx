@@ -60,7 +60,7 @@ export const ProjectProvider = ({ children }) => {
     fetchProjectData();
   }, [projectId]);
 
-  const contextValue = { ...projectData, loading, error, projectId };
+  const contextValue = { ...projectData, loading, error, projectId, setProjectData };
 
   return (
     <ProjectContext.Provider value={contextValue}>

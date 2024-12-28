@@ -12,15 +12,87 @@ export const getInProgressTasks = async (userId) => {
   }
 };
 
+
+
 export const markTaskCompleted = async (taskId, status) => {
     try {
-      const response = await axiosInstance.put(`/api/tasks/${taskId}/${status}`);
+      const response = await axiosInstance.put(`/api/tasks/change-status/${taskId}`, {status});
       return response.data;
     } catch (error) {
       console.error('Error marking task as completed:', error);
       throw error;
     }
   };
+
+  export const changeTaskName = async (taskId, name) => {
+    try {
+      const response = await axiosInstance.put(`/api/tasks/change-name/${taskId}`, {name});
+      return response.data;
+    } catch (error) {
+      console.error('Error changing task name:', error);
+      throw error;
+    }
+  };
+
+  export const changeTaskDescription = async (taskId, description) => {
+    try {
+      const response = await axiosInstance.put(`/api/tasks/change-description/${taskId}`, {description});
+      return response.data;
+    } catch (error) {
+      console.error('Error changing task description:', error);
+      throw error;
+    }
+  };
+  export const changeTaskDeadline = async (taskId, deadline) => {
+    try {
+      const response = await axiosInstance.put(`/api/tasks/change-deadline/${taskId}`, {deadline});
+      return response.data;
+    } catch (error) {
+      console.error('Error changing task deadline:', error);
+      throw error;
+    }
+  };
+
+  export const changeProjectStatus = async (projectId, status) => {
+    try {
+      const response = await axiosInstance.put(`/api/projects/${projectId}/status`, {status});
+      return response.data;
+    } catch (error) {
+      console.error('Error changing status:', error);
+      throw error;
+    }
+  }
+
+  export const changeProjectDescription = async (projectId, description) => {
+    try {
+      const response = await axiosInstance.put(`/api/projects/change-description/${projectId}`, { description});
+      return response.data;
+    } catch (error) {
+      console.error('Error changing desc:', error);
+      throw error;
+    }
+  }
+
+  export const changeProjectName = async (projectId, name) => {
+    try {
+      const response = await axiosInstance.put(`/api/projects/change-name/${projectId}`, { name});
+      return response.data;
+    } catch (error) {
+      console.error('Error changing name:', error);
+      throw error;
+    }
+  }
+
+  export const changeProjectDeadline = async (projectId, deadline) => {
+    try {
+      
+      const response = await axiosInstance.put(`/api/projects/change-deadline/${projectId}`, {deadline} );
+      return response.data;
+    } catch (error) {
+      console.error('Error changing deadline:', error);
+      throw error;
+    }
+  }
 
   export const getProjectSummary = async (userId) => {
     try {
@@ -168,6 +240,16 @@ export const markTaskCompleted = async (taskId, status) => {
       return response.data;
     } catch (error) {
       console.error("Error deleting task: ", error)
+      throw error
+    }
+  }
+
+  export const deleteProject = async (projectId) =>{
+    try {
+      const response = await axiosInstance.delete(`/api/projects/${projectId}`)
+      return response.data;
+    } catch (error) {
+      console.error("Error deleting project: ", error)
       throw error
     }
   }

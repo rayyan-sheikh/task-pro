@@ -156,7 +156,97 @@ const projectController = {
       console.error('Error fetching project admins:', error);
     res.status(500).json({ error: 'Failed to fetch project admins' });
     }
-  }
+  },
+  changeProjectStatus: async (req, res) => {
+    try {
+      const { projectId } = req.params;
+      const {status} = req.body;
+      
+      if (!status) {
+        return res.status(400).json({ message: 'Status is required' });
+      }
+  
+      const changedProjectStatus = await Project.changeProjectStatus(projectId, status);
+      
+      // Check if the task was found and updated
+      if (!changedProjectStatus) {
+        return res.status(404).json({ message: 'Project not found' });
+      }
+  
+      res.status(200).json(changedProjectStatus);
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ message: 'Error updating task' });
+    }
+  },
+  changeProjectDescription: async (req, res) => {
+    try {
+      const { projectId } = req.params;
+      const { description } = req.body;
+  
+      if (!description) {
+        return res.status(400).json({ message: ' description is required' });
+      }
+  
+      const updatedProject = await Project.changeProjectDescription(projectId, description);
+  
+      if (!updatedProject) {
+        return res.status(404).json({ message: 'Project not found' });
+      }
+  
+      res.status(200).json(updatedProject);
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ message: 'Error updating project information' });
+    }
+  },
+
+  changeProjectName: async (req, res) => {
+    try {
+      const { projectId } = req.params;
+      const { name } = req.body;
+  
+      if (!name) {
+        return res.status(400).json({ message: ' name is required' });
+      }
+  
+      const updatedProject = await Project.changeProjectName(projectId, name);
+  
+      if (!updatedProject) {
+        return res.status(404).json({ message: 'Project not found' });
+      }
+  
+      res.status(200).json(updatedProject);
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ message: 'Error updating project information' });
+    }
+  },
+
+  changeProjectDeadline: async (req, res) => {
+    try {
+      const { projectId } = req.params;
+      const {deadline} = req.body;
+      console.log("🚀 ~ changeProjectDeadline: ~ deadline:", deadline)
+      
+      if (!deadline) {
+        return res.status(400).json({ message: 'Deadline is required' });
+      }
+  
+      const changedProjectDeadline = await Project.changeProjectDeadline(projectId, deadline);
+      
+      if (!changedProjectDeadline) {
+        return res.status(404).json({ message: 'Project not found' });
+      }
+      console.log(changedProjectDeadline)
+  
+      res.status(200).json(changedProjectDeadline);
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ message: 'Error updating task' });
+    }
+  },
+  
 };
 
 

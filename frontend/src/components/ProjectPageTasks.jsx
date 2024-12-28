@@ -48,7 +48,7 @@ const ProjectPageTasks = () => {
   // Format date function
   function formatDate(isoDate) {
     const date = new Date(isoDate);
-    const day = date.getUTCDate();
+    const day = date.getDate();
     const month = date.toLocaleString("default", { month: "long" });
     return `${day} ${month}`;
   }

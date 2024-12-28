@@ -107,6 +107,55 @@ const Project = {
       throw new Error('Unable to fetch projects');
     }
   },
+  changeProjectStatus: async (projectId, status) => {
+    const query = `
+      UPDATE projects
+      SET status = $1, updatedAt = NOW()
+      WHERE id = $2
+      RETURNING *;
+    `;
+    const values = [status, projectId];
+    const result = await pool.query(query, values);
+    return result.rows[0];
+  },
+
+  changeProjectDescription: async (projectId, description) => {
+    const query = `
+      UPDATE projects
+      SET description = $1, updatedAt = NOW()
+      WHERE id = $2
+      RETURNING *;
+    `;
+    const values = [description, projectId];
+    const result = await pool.query(query, values);
+    return result.rows[0];
+  },
+
+  changeProjectName: async (projectId, name) => {
+    const query = `
+      UPDATE projects
+      SET name = $1, updatedAt = NOW()
+      WHERE id = $2
+      RETURNING *;
+    `;
+    const values = [name, projectId];
+    const result = await pool.query(query, values);
+    return result.rows[0];
+  },
+
+  changeProjectDeadline: async (projectId, deadline) => {
+    const query = `
+      UPDATE projects
+      SET deadline = $1, updatedAt = NOW()
+      WHERE id = $2
+      RETURNING *;
+    `;
+    const values = [deadline, projectId];
+    const result = await pool.query(query, values);
+    return result.rows[0];
+  },
+
+  
   
 
   // Add other necessary methods for the Project model

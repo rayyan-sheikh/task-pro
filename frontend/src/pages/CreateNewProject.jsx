@@ -18,6 +18,8 @@ import {
   ScrollAreaAutosize,
   Paper,
   Stack,
+  Breadcrumbs,
+  Anchor,
 } from "@mantine/core";
 import classes from "../Input.module.css";
 import React, { useEffect, useState } from "react";
@@ -27,6 +29,7 @@ import { createProject, addProjectMembers, getAllUsers } from "../apiService";
 import { useNavigate } from "react-router-dom";
 import {IconPlus} from '@tabler/icons-react'
 import {useAuth} from '../contexts/AuthContext'
+import utils from "../utils/utils";
 
 const CreateNewProject = () => {
   const [activeStep, setActiveStep] = useState(0);
@@ -154,8 +157,8 @@ const CreateNewProject = () => {
           ? "Project name must be between 5 to 20 characters"
           : null,
       projectDescription: (value) =>
-        value.length < 20 || value.length > 500
-          ? "Description must be between 20 to 500 characters"
+        value.length < 20
+          ? "Description must be at least 20 characters"
           : null,
       projectDeadline: (value) => (value ? null : "Deadline is required"),
     },
@@ -177,7 +180,7 @@ const CreateNewProject = () => {
       name: form.values.projectName,
       description: form.values.projectDescription,
       createdBy: userId,
-      deadline: form.values.projectDeadline,
+      deadline: utils.dateMantineToPostgre(form.values.projectDeadline),
     };
 
     try {
@@ -189,16 +192,41 @@ const CreateNewProject = () => {
     }
   };
 
+  const handleGenerateDescription = () => {
+    const randomDescription = utils.generateRandomTaskDescription();
+    form.setFieldValue("projectDescription", randomDescription); // Updates the form state
+};
+
   const nextStep = () => setActiveStep((prevStep) => prevStep + 1);
   const prevStep = () => setActiveStep((prevStep) => prevStep - 1);
 
 
   return (
-    <Box>
-      <Title size="h1" c={'dark.6'} ff={'poppins'} mb={10} fw={600} lts={-2} lh={2}>
+    <Box mt={20} px={"md"}>
+      <Breadcrumbs
+        styles={{
+          breadcrumb: {
+            color: "#e8590c",
+            fontWeight: 600,
+          },
+        }}
+        mb={20}
+      >
+        <Anchor
+        onClick={(e) => {
+          e.preventDefault(); // Prevent default anchor behavior
+          navigate(`/projects/create`); // Navigate programmatically
+        }}
+        component="button" 
+        lh={1.5}
+      >
+        New Project
+      </Anchor>
+      </Breadcrumbs>
+      <Title size="h1" c="dark.6" fontWeight={600} my={20}>
         Create New Project
       </Title>
-      <Paper shadow="xl" radius="md" ff={'poppins'} h={500} withBorder p={40} bg={"gray.0"}  >
+      <Box  ff={'poppins'} bg={"gray.0"}  >
       <Stepper color="orange.8" active={activeStep} onStepClick={setActiveStep}  >
         {/* Step 1: Project Name */}
         <Stepper.Step label="Project Name" description="Enter project name">
@@ -228,12 +256,13 @@ const CreateNewProject = () => {
             <Textarea
               withAsterisk
               classNames={{ input: classes.CreateNewProjectDescriptionInput }}
-              description="(20-500 Characters)"
+              description="Please enter a description below"
               label="Project Description"
               placeholder="Add Project Description"
-              maxLength={500}
+              
               {...form.getInputProps("projectDescription")}
             />
+            <Button variant="outline" w={180} color="orange.8" onClick={()=>{handleGenerateDescription()}}>Generate Randomly</Button>
             <Group position="right" mt="md">
               <Button bg={"orange.7"} onClick={prevStep}>Back</Button>
               <Button bg={"orange.7"} onClick={()=>setActiveStep((prevStep) => prevStep + 1)}>Next</Button>
@@ -309,7 +338,7 @@ const CreateNewProject = () => {
           </Combobox>
 
           <Group position="right" mt="md">
-            <Button bg={"orange.7"} onClick={prevStep}>Back</Button>
+            {/* <Button bg={"orange.7"} onClick={prevStep}>Back</Button> */}
             <Button bg={"orange.7"} onClick={handleAddMembers}>Finish</Button>
           </Group>
           </Stack>
@@ -327,7 +356,7 @@ const CreateNewProject = () => {
           </Button>
         </Stepper.Completed>
       </Stepper>
-      </Paper>
+      </Box>
     </Box>
   );
 };

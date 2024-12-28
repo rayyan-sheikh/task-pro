@@ -6,8 +6,6 @@ const verifyToken = (req, res, next) => {
   const authHeader = req.headers.authorization;
   const token = authHeader && authHeader.split(' ')[1]; // Format: "Bearer <token>"
 
-  console.log("From middleware:", token);
-
   if (!token) {
     return res.status(401).json({ message: 'Access denied. No token provided.' });
   }
@@ -16,7 +14,6 @@ const verifyToken = (req, res, next) => {
     // Verify token
     const decoded = jwt.verify(token, config.ACCESS_TOKEN_SECRET);
     req.user = decoded;
-    console.log(decoded)
     next(); // Proceed to the next middleware or route handler
   } catch (error) {
     console.error("Token verification failed:", error);

@@ -120,7 +120,7 @@ const UserProjects = () => {
       >
         {items}
       </Breadcrumbs>
-      <Title size="h1" color="dark.6" fontWeight={600} my={20}>
+      <Title size="h1" c="dark.6" fontWeight={600} my={20}>
         Your Projects
       </Title>
 

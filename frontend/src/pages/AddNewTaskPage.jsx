@@ -106,6 +106,8 @@ const AddNewTaskPage = () => {
     if (error) setError("");
   };
 
+ 
+
   const handleCreateTask = async () => {
     const taskData = {
       name: formData.name,
@@ -113,7 +115,7 @@ const AddNewTaskPage = () => {
       assignedTo: formData.assignedMember.user_id,
       projectId: projectId,
       status: "in progress",
-      deadline: formData.deadline.toISOString().split("T")[0],
+      deadline: utils.dateMantineToPostgre(formData.deadline),
     };
 
     try {
@@ -162,8 +164,8 @@ const AddNewTaskPage = () => {
     const taskName = formData.name.trim();
 
     // Validate the input
-    if (taskName.length < 5 || taskName.length > 20) {
-      setError("Task Name must be between 5 and 20 characters.");
+    if (taskName.length < 5 || taskName.length > 50) {
+      setError("Task Name must be between 5 and 50 characters.");
       return;
     }
 
@@ -175,8 +177,8 @@ const AddNewTaskPage = () => {
     const taskDescription = formData.description;
 
     // Validate the input
-    if (taskDescription.length < 300) {
-      setError("Task Description must be at least 300 characters.");
+    if (taskDescription.length < 50) {
+      setError("Task Description must be at least 50 characters.");
       return;
     }
 
@@ -271,7 +273,7 @@ const AddNewTaskPage = () => {
                       Task Name
                     </Text>
                     <Text ff={"poppins"} fz={13} fw={500} c={"dark.2"} mt={-16}>
-                      (5-20 Characters)
+                      (5-50 Characters)
                     </Text>
                     <TextInput
                       classNames={{
@@ -279,7 +281,7 @@ const AddNewTaskPage = () => {
                           ? classes.inputTaskError
                           : classes.inputTask, // Conditional class
                       }}
-                      maxLength={20}
+                      maxLength={50}
                       minLength={5}
                       placeholder="Enter task name"
                       value={formData.name}
@@ -310,7 +312,7 @@ const AddNewTaskPage = () => {
                       Task Description
                     </Text>
                     <Text ff={"poppins"} fz={13} fw={500} c={"dark.2"} mt={-16}>
-                      (300 Characters or more)
+                      (50 Characters or more)
                     </Text>
                     <Textarea
                       classNames={{
@@ -324,7 +326,7 @@ const AddNewTaskPage = () => {
                       onChange={handleInputChange}
                       withAsterisk
                       
-                      minLength={300}
+                      minLength={50}
                       error={error}
                     />
                   </Flex>

@@ -8,8 +8,9 @@ async function getProjectSummaryForUser(userId) {
         p.deadline,
         COUNT(t.id) AS total_tasks,
         COUNT(CASE WHEN t.status = 'completed' THEN 1 END) AS completed_tasks,
-        COUNT(CASE WHEN t.status = 'pending' THEN 1 END) AS pending_tasks,
+        COUNT(CASE WHEN t.status = 'overdue' THEN 1 END) AS pending_tasks,
         COUNT(CASE WHEN t.status = 'in progress' THEN 1 END) AS in_progress_tasks,
+        COUNT(CASE WHEN t.assignedto = $1 THEN 1 END) AS user_tasks,
         COUNT(CASE WHEN t.status = 'in progress' AND t.assignedto = $1 THEN 1 END) AS user_in_progress_tasks
     FROM 
         projects p

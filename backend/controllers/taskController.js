@@ -77,8 +77,8 @@ const taskController = {
 
   changeTaskStatus: async (req, res) => {
     try {
-      const { taskId, status } = req.params; // Get the task ID from the request parameters
-      
+      const { taskId } = req.params; // Get the task ID from the request parameters
+      const {status} = req.body;
   
       // Check if the status is provided
       if (!status) {
@@ -100,7 +100,82 @@ const taskController = {
       res.status(500).json({ message: 'Error updating task' });
     }
   },
+
   
+  changeTaskName: async (req, res) => {
+    try {
+      const { taskId } = req.params; // Get the task ID from the request parameters
+      const {name} = req.body;  
+      // Check if the status is provided
+      if (!name) {
+        return res.status(400).json({ message: 'Name is required' });
+      }
+  
+      // Update the task status using the Task model's changeTaskStatus method
+      const changedTaskName = await Task.changeTaskName(taskId, name);
+      
+      // Check if the task was found and updated
+      if (!changedTaskName) {
+        return res.status(404).json({ message: 'Task not found' });
+      }
+  
+      // Respond with the updated task status
+      res.status(200).json(changedTaskName);
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ message: 'Error updating task' });
+    }
+  },
+
+  changeTaskDescription: async (req, res) => {
+    try {
+      const { taskId } = req.params; 
+      const {description} = req.body;  
+      // Check if the status is provided
+      if (!description) {
+        return res.status(400).json({ message: 'Description is required' });
+      }
+  
+      // Update the task status using the Task model's changeTaskStatus method
+      const changedTaskDescription = await Task.changeTaskDescription(taskId, description);
+      
+      // Check if the task was found and updated
+      if (!changedTaskDescription) {
+        return res.status(404).json({ message: 'Task not found' });
+      }
+  
+      // Respond with the updated task status
+      res.status(200).json(changedTaskDescription);
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ message: 'Error updating task' });
+    }
+  },
+
+  changeTaskDeadline: async (req, res) => {
+    try {
+      const { taskId } = req.params; 
+      const {deadline} = req.body;  
+      // Check if the status is provided
+      if (!deadline) {
+        return res.status(400).json({ message: 'Deadline is required' });
+      }
+  
+      // Update the task status using the Task model's changeTaskStatus method
+      const changedTaskDeadline = await Task.changeTaskDeadline(taskId, deadline);
+      
+      // Check if the task was found and updated
+      if (!changedTaskDeadline) {
+        return res.status(404).json({ message: 'Task not found' });
+      }
+  
+      // Respond with the updated task status
+      res.status(200).json(changedTaskDeadline);
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ message: 'Error updating task' });
+    }
+  },
 
   deleteTask: async (req, res) => {
     try {

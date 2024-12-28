@@ -9,7 +9,6 @@ const ProjectsStats = () => {
   return (
     
     <Paper shadow="xl" radius="md" withBorder p="xl" my={20} bg={'gray.0'}>
-       <YourTotalTasks/>
       <ProjectProgress/>
     </Paper>
   );

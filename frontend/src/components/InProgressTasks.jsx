@@ -18,13 +18,18 @@ import {
   Group,
 } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
+import { useAuth } from "../contexts/AuthContext";
+import { useNavigate } from "react-router-dom";
 
-const InProgressTasks = ({ userId }) => {
+const InProgressTasks = () => {
   const [inProgressTasks, setInProgressTasks] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [opened, { toggle, close }] = useDisclosure(false);
   const [selectedTaskId, setSelectedTaskId] = useState(null);
+  const { user } = useAuth();
+    const userId = user.id;
+    const navigate = useNavigate()
 
   useEffect(() => {
     const fetchData = async () => {
@@ -41,6 +46,7 @@ const InProgressTasks = ({ userId }) => {
 
     fetchData();
   }, [userId]);
+  console.log(inProgressTasks)
 
   const handleMarkAsCompleted = async () => {
     if (!selectedTaskId) return;
@@ -108,9 +114,9 @@ const InProgressTasks = ({ userId }) => {
   }
 
   return (
-    <Paper shadow="xl" radius="md" withBorder p={20} bg={"gray.0"}  >
+    <Paper shadow="xl" radius="md" withBorder p={20} bg={"gray.0"} mt={30} >
       
-      <Title size="h1" c={'dark.6'} ff={'poppins'} mb={10} fw={600} lts={-2} lh={2}>
+      <Title size="h2" ta={"center"}  c={'dark.6'} ff={'poppins'} mb={10} fw={600} lts={-2} lh={2}>
         Tasks in Progress
       </Title>
       
@@ -138,26 +144,18 @@ const InProgressTasks = ({ userId }) => {
                   <Table.Th>Task</Table.Th>
                   {/* <Table.Th w={120}>Status</Table.Th> */}
                   <Table.Th w={180}>Deadline</Table.Th>
-                  <Table.Th w={100}>Time Left</Table.Th>
                   <Table.Th>Action</Table.Th>
                 </Table.Tr>
               </Table.Thead >
-              <Table.Tbody bg={"gray.0"} c={'dark.6'} ff={'poppins'}>
+              <Table.Tbody onClick={()=>{
+                navigate(`/user-projects/${task.projectId}/task/${task.taskId}`)
+              }} style={{cursor:"pointer"}} bg={"gray.0"} c={'dark.6'} ff={'poppins'}>
                 {inProgressTasks.map((task) => (
                   <Table.Tr key={task.id}>
                     <Table.Td >{task.projectname}</Table.Td>
                     <Table.Td fw={600}>{task.name}</Table.Td>
-                    {/* <Table.Td>
-                      <Badge
-                        size="sm"
-                        variant="gradient"
-                        gradient={{ from: "indigo", to: "blue", deg: 90 }}
-                      >
-                        {task.status}
-                      </Badge>
-                    </Table.Td> */}
+                    
                     <Table.Td>{formatDeadline(task.deadline)}</Table.Td>
-                    <Table.Td>{calculateTimeLeft(task.deadline)}</Table.Td>
                     <Table.Td>
                       
                           <IoCheckmarkCircleSharp style={{ cursor: 'pointer' }} size={25} color="#2b8a3e"
@@ -183,7 +181,7 @@ const InProgressTasks = ({ userId }) => {
                         <Group align="flex-end">
                           <Button
                             variant="filled"
-                            color="green.9"
+                            color="orange.9"
                             onClick={handleMarkAsCompleted}
                           >
                             Yes
